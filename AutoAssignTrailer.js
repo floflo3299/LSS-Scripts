@@ -122,7 +122,7 @@
         }
 
 
-        messageText.innerText = "FERTIG";
+        messageText.innerText = "Zuweisung abgeschlossen";
 
         currentlyRunning = false
     }
