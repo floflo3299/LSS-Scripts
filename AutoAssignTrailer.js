@@ -20,7 +20,7 @@
 
         //------------ab hier bearbeiten
 
-        // Was das Skript macht: Es weißt einem aktuell noch nicht zugewiesenem Anhänger ein entsprechendes Zugfahrzeug eines festgelgenten Types zu
+        // Was das Skript macht: Es weißt einem aktuell noch nicht zugewiesenem Anhänger ein entsprechendes Fahrzeug eines festgelgenten Fahrzeug-Typens zu
 
         // - es ignoriert Anhänger, welche bereits einem Zugfahrzeug zugewiesen ist
         // - es weist einem Fahrzeug maximal ein Anhänger zu. Fahrzeuge, die bereits als Zugfahrzeug eingesetzt werden, werden nicht nochmal zugewiesen
