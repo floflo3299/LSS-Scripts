@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      1.0.1
 // @description  Füge Anhängern automatisch entsprechende Zugfahrzeuge zu
 // @author       You
 // @match        https://www.leitstellenspiel.de/
@@ -44,6 +44,9 @@
         // Der Text nach den beiden   //   dient lediglich als Hinweis, wofür die IDs stehen und hat keine Auswirkung
 
         // WICHTIG: nachdem die Einträge entsprechend den eigenen Vorlieben abgeänder wurden und gespeichert wurde, lade Leitstellenspiel neu, damit die Änderungen übernommen werden
+
+        // Zum Aktivieren des automatischen Zuweisens öffnet das Menü "Skripte", welches sich auf der Hauptseite oben in der Reihe (wo auch eure Credits angezeigt werden) ganz links befindet.
+        // Wählt dort "auto Assign Trailer" oder in deutsch "automatisches Anhänger-Zuweisen" aus.
 
         //---- AB HIER EINTRÄGE EINFÜGEN
 
