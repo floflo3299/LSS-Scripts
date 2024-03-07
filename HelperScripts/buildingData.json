@@ -117,6 +117,12 @@
                 "name": "Drohnen-Erweiterung",
                 "cost": 150000,
                 "duration": 5
+            },
+            {
+                "id": 19,
+                "name": "Verpflegungsdienst",
+                "cost": 200000,
+                "duration": 5
             }
         ]
     },
