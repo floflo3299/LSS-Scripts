@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.1.0
 // @description  Füge Anhängern automatisch entsprechende Zugfahrzeuge zu
-// @author       You
+// @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
@@ -95,7 +95,15 @@
                 messageText.innerText = (links.length-i)+" Fahrzeugtypen verbleibend\n"+(foundTrailers.length-n-1)+" Fahrzeuge vom aktuellen Typ verbleibend\nFENSTER NICHT SCHLIEßEN";
 
                 //if(foundTrailers[n].tractive_vehicle_id == null || vehicleAssignedMultipleTimes(allVehicles, foundTrailers[n].tractive_vehicle_id)){
-                if(foundTrailers[n].tractive_vehicle_id == null){
+                if(foundTrailers[n].tractive_vehicle_id == null || foundTrailers[n].tractive_random == true){
+
+                    if(foundTrailers[n].tractive_vehicle_id != null){
+                        let index = allVehicles.findIndex((obj => obj.id == foundTrailers[n].id));
+                        allVehicles[index].tractive_vehicle_id = null
+
+                        foundTrailers[n].tractive_vehicle_id = null
+                    }
+
                     //console.log("assigne trailer" + foundTrailers[n].id);
                     let foundVehicles = foundTowingVehicle.filter(e => e.building_id == foundTrailers[n].building_id);
 
@@ -145,6 +153,17 @@
     function delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -253,6 +272,19 @@
         messageText.style.fontWeight = "900";
         document.getElementById(baseID + "OverlayBody").appendChild(messageText);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
