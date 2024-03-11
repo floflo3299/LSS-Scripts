@@ -14,7 +14,7 @@
                        </a>
                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu_profile" id="ownScripts_dropdown_entries"></ul>`;
 
-            document.getElementById("news_li").before(newWindow);
+            document.getElementById("news").before(newWindow);
         }
 
         let newWindow = document.createElement("li");
