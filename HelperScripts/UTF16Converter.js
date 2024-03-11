@@ -1,4 +1,4 @@
-// https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js
+// original:   https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js
 
 var LZString = function() {
     function a(a, b) {
