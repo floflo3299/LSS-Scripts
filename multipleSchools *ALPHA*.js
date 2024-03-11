@@ -5,8 +5,6 @@
 // @author       Silberfighter (original from Allure149)
 // @match        https://*.leitstellenspiel.de/buildings/*
 // @grant        none
-// @updateURL    https://github.com/types140/LSS-Scripte/raw/master/multipleSchools.user.js
-// @downloadURL  https://github.com/types140/LSS-Scripte/raw/master/multipleSchools.user.js
 // ==/UserScript==
 /* global $ */
 
