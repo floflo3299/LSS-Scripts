@@ -1,19 +1,19 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
-// @description  Füge Anhängern automatisch entsprechende Zugfahrzeuge zu
+// @version      1.1.1
+// @description  try to take over the world!
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
+// @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
 // @grant        GM_addStyle
 // ==/UserScript==
 
 (async function() {
 
-    await $.getScript("https://api.lss-cockpit.de/lib/utf16convert.js");
-//    createOrAssigneDropdownmenu("autoAssignTrailer", "auto Assign Trailer", autoBuyVehiclesFromStartScreen);
+    //    createOrAssigneDropdownmenu("autoAssignTrailer", "auto Assign Trailer", autoBuyVehiclesFromStartScreen);
     createOrAssigneDropdownmenu("autoAssignTrailer", "auto Assign Trailer", showOwnCustomOverlay);
 
     var links = [
@@ -71,11 +71,11 @@
         currentlyRunning = true
 
 
-        if (!sessionStorage.cVehicles || JSON.parse(sessionStorage.cVehicles).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.cVehicles).userId != user_id) {
-            await $.getJSON('/api/vehicles').done(data => sessionStorage.setItem('cVehicles', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
+        if (!sessionStorage.c2Vehicles || JSON.parse(sessionStorage.c2Vehicles).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Vehicles).userId != user_id) {
+            await $.getJSON('/api/vehicles').done(data => sessionStorage.setItem('c2Vehicles', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
         }
 
-        var allVehicles = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.cVehicles).value));
+        var allVehicles = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.c2Vehicles).value));
 
 
         //console.log(allVehicles.length)
@@ -272,19 +272,6 @@
         messageText.style.fontWeight = "900";
         document.getElementById(baseID + "OverlayBody").appendChild(messageText);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
