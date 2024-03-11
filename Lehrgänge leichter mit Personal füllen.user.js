@@ -1,20 +1,18 @@
 // ==UserScript==
-// @name         Lehrgänge leichter mit Personal füllen
+// @name        Lehrgänge leichter mit Personal füllen
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.2.1
 // @description  enables the filtering of buildings in the creation of courses and select people faster!
 // @author       Silberfighter
 // @include      https://www.leitstellenspiel.de/buildings/*
 // @include      https://www.leitstellenspiel.de/schoolings/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
+// @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
 // @grant        none
 // ==/UserScript==
 
 (async function() {
     'use strict';
-
-    await $.getScript("https://api.lss-cockpit.de/lib/utf16convert.js");
-
 
     //Mit dieser Variable können Standard-Filter-Werte für einzelne Lehrgänge festgelegt werden
     //Dabei muss man wie folgt vorgehen:
@@ -72,10 +70,11 @@
 
     var buildings;
 
-    if (!sessionStorage.cBuildings || JSON.parse(sessionStorage.cBuildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.cBuildings).userId != user_id) {
-        await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('cBuildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
+    if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
+        await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
     }
-    buildings = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.cBuildings).value));
+    
+    buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
 
     var buildingType = 0;
     if(window.location.href.includes("leitstellenspiel.de/buildings/")){
@@ -339,7 +338,6 @@
     filterBuildings();
 
     async function filterBuildings(){
-        console.log(document.getElementById('lager').checked);
         if(buildings){
             if(oldAusbauSelection != document.getElementById('ausbau').value || oldGebäudeSelection != document.getElementById('gebaeudeArt').value || oldNumPeopleSelection != document.getElementById('minPerson').value ||
                oldLagerSelection != document.getElementById('lager').checked){
@@ -440,11 +438,11 @@
         if(building.getElementsByClassName("label label-success").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-success")[0].innerHTML) || 0;
         }
-        console.log(returnValue);
+        
         if(building.getElementsByClassName("label label-info").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-info")[0].innerHTML) || 0;
         }
-        console.log(returnValue);
+        
         return returnValue;
     }
 
