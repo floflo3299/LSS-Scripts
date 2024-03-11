@@ -1,25 +1,25 @@
 // ==UserScript==
 // @name         de-/activate Extensions
 // @namespace    http://tampermonkey.net/
-// @version      1.3.2
+// @version      1.3.3
 // @description  Change the status of expensions and buildings
 // @author       Silberfighter
 // @include      *://www.leitstellenspiel.de/
 // @include      /^https?:\/\/(?:w{3}\.)?(?:polizei\.)?leitstellenspiel\.de\/$/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
+// @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
 // @grant        GM_addStyle
 // ==/UserScript==
 /* global $ */
 
 (async function() {
 
-    await $.getScript("https://api.lss-cockpit.de/lib/utf16convert.js");
     createOrAssigneDropdownmenu("changeActiveExtensions", "change active Extensions", showOwnCustomOverlay);
 
-    if (!sessionStorage.cBuildings || JSON.parse(sessionStorage.cBuildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.cBuildings).userId != user_id) {
-        await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('cBuildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
-    }
+    //if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
+    //    await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
+    //}
     //fetch('https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/buildingData.json').then((response) => response.text()).then((text) => console.log(text));
     //const buildingData = await $.getJSON("https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/buildingData.json");
 
@@ -81,10 +81,10 @@
 
         document.getElementById(baseID + "WaitMessage").className = "";
 
-        if (!sessionStorage.cBuildings || JSON.parse(sessionStorage.cBuildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.cBuildings).userId != user_id) {
+        if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
             dropdown.value = -1;
             addExtensionsToList(undefined);
-            await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('cBuildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
+            await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
         }
 
         document.getElementById(baseID + "WaitMessage").className = "hidden";
@@ -164,7 +164,7 @@
         let relevantExtensions = relevantBuilding.extensions;
         let buildingIDs = getRelevantBuildingID(relevantBuilding.id);
 
-        let allRelevantBuildings = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.cBuildings).value)).filter(e => buildingIDs.indexOf(e.building_type) >= 0);
+        let allRelevantBuildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value)).filter(e => buildingIDs.indexOf(e.building_type) >= 0);
 
 
         let activ = allRelevantBuildings.filter(e => e.enabled == true);
@@ -243,7 +243,7 @@
 
 
     async function deActiveateBuilding(clickedButton){
-        let buildings = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.cBuildings).value));
+        let buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
 
         let buildingsID = getRelevantBuildingID(clickedButton.getAttribute("building_id"));
         let activateBuilding = clickedButton.getAttribute("shouldActivate") === 'true';
@@ -296,7 +296,7 @@
         }
 
 
-        sessionStorage.setItem('cBuildings', JSON.stringify({ lastUpdate: JSON.parse(sessionStorage.cBuildings).lastUpdate, value: LZString.compressToUTF16(JSON.stringify(buildings)), userId: JSON.parse(sessionStorage.cBuildings).userId }));
+        sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: JSON.parse(sessionStorage.c2Buildings).lastUpdate, value: LZString.compress(JSON.stringify(buildings)), userId: JSON.parse(sessionStorage.c2Buildings).userId }));
 
         let allUpdatedBuildings = buildings.filter(e => buildingsID.indexOf(e.building_type) >= 0);
         let allActiveUpdatedBuildings = allUpdatedBuildings.filter(e => e.enabled == true);
@@ -309,7 +309,7 @@
 
 
     async function deActiveateExtensions(clickedButton){
-        let buildings = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.cBuildings).value));
+        let buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
 
         let buildingsID = getRelevantBuildingID(clickedButton.getAttribute("building_id"));
         let extensionID = clickedButton.getAttribute("extension_id");
@@ -377,7 +377,7 @@
         }
 
 
-        sessionStorage.setItem('cBuildings', JSON.stringify({ lastUpdate: JSON.parse(sessionStorage.cBuildings).lastUpdate, value: LZString.compressToUTF16(JSON.stringify(buildings)), userId: JSON.parse(sessionStorage.cBuildings).userId }));
+        sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: JSON.parse(sessionStorage.c2Buildings).lastUpdate, value: LZString.compress(JSON.stringify(buildings)), userId: JSON.parse(sessionStorage.c2Buildings).userId }));
 
         let allUpdatedBuildings = buildings.filter(e => buildingsID.indexOf(e.building_type) >= 0);
         let allActiveUpdatedBuildings = allUpdatedBuildings.filter(e => e.extensions.filter(exten => exten.type_id == extensionID && exten.available && exten.enabled == true).length > 0);
