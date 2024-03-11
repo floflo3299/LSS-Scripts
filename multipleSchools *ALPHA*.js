@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         MultipleSchools
-// @version      1.0.9
+// @version      1.0.10
 // @description  Use more than 4 classes at once
 // @author       Silberfighter (original from Allure149)
 // @match        https://*.leitstellenspiel.de/buildings/*
@@ -184,6 +184,7 @@
     });
 
     h2.innerText = "checkpoint 14" + zusatzInfo;
+    h2.innerText = ""
 
     $("#multiple_commits").on("click", async function(){
         $("#multiple_commits").after(`<span id="multipleClassesOutput" class="label label-warning" style="font-size: 14px">Informationen werden zusammengestellt. Bitte warten ...</span>`);
