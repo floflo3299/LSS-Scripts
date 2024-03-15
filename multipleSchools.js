@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         MultipleSchools
-// @version      1.0.10
+// @version      1.0.11
 // @description  Use more than 4 classes at once
 // @author       Silberfighter (original from Allure149)
 // @match        https://*.leitstellenspiel.de/buildings/*
@@ -24,11 +24,11 @@
         return JSON.parse(sessionStorage.aBuildings).value;
         }**/
 
-        if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
-            await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
-        }
+        //if (!sessionStorage.c2Schools || JSON.parse(sessionStorage.c2Schools).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Schools).userId != user_id) {
+        //    await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Schools', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
+        //}
 
-        var allBuildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
+        var allBuildings = await $.getJSON('/api/buildings');
 
         return allBuildings;
     }
