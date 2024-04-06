@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PersonalToBePol
-// @version      1.0.1
+// @version      1.0.2
 // @description  transfer personal from police stations to BePol
 // @author       Silberfighter
 // @include      https://www.leitstellenspiel.de/buildings/*
@@ -23,12 +23,9 @@
 
     if (building.building_type == 11 && window.location.href == "https://www.leitstellenspiel.de/buildings/" + buildingID + "/hire"){
 
-        var allMsg = Array.prototype.slice.call(document.getElementsByClassName("alert alert-info"));
-        allMsg = allMsg.filter(item => new String(item.innerHTML).valueOf() == new String("Wichtig: Wenn du Personal übernimmst, kann dieses NICHT rückgängig gemacht werden. ").valueOf());
-
         var newWindow = document.createElement("div");
         newWindow.innerHTML = `
-            <div class="navbar-text navbar-right">
+            <div>
                 <p style="display: inline-block">Personal pro Wache:</p>
                 <input style="display:inline-block; color: #000; width:50px;" type="number" id="maxPerBuilding" min="1" value="1"></input>
                 <a id="btnAutoSelect" class="btn btn-success">Auswählen</a>
@@ -39,7 +36,14 @@
             </div>
         `;
 
-        allMsg[0].parentNode.insertBefore(newWindow, allMsg[0]);
+        newWindow.style.padding = "15px 5px 15px 5px";
+
+        
+        let titleDiv = Array.from(document.getElementsByTagName("h2"));
+        //titleDiv = titleDiv.filter(e => e.getAttribute("building_type") != undefined);
+        titleDiv = titleDiv[0];
+        titleDiv.parentNode.parentNode.insertBefore(newWindow, titleDiv.parentNode.nextSibling);
+
 
         $('#btnAutoSelect').on('click', function() {
             var allBuildings = Array.prototype.slice.call(document.getElementsByClassName("table table-striped tablesorter tablesorter-default"));
