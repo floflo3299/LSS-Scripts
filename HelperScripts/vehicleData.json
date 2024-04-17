@@ -2551,5 +2551,59 @@
 		"prerequisites": {
 			"seg": 1
 		}
+	},
+	{
+		"id": 134,
+		"name": "Pferdetransporter klein",
+		"short_name": "Pferd klein",
+		"class": [],
+		"class_alias": [],
+		"cost": 20000,
+		"personal": {
+			"min": 2,
+			"max": 4
+		},
+		"building": [11],
+		"additional": {
+			"qualification": [{"names": ["Reiterstaffel"], "min": 2, "max": 4}]
+		}
+	},
+	{
+		"id": 135,
+		"name": "Pferdetransporter groß",
+		"short_name": "Pferd groß",
+		"class": [],
+		"class_alias": [],
+		"cost": 120000,
+		"personal": {
+			"min": 2,
+			"max": 2
+		},
+		"building": [11]
+	},
+	{
+		"id": 136,
+		"name": "Anh Pferdetransport",
+		"short_name": "Anh Pferd",
+		"class": [],
+		"class_alias": [],
+		"cost": 15000,
+		"personal": {
+			"min": 0,
+			"max": 0
+		},
+		"building": [11]
+	},
+	{
+		"id": 137,
+		"name": "Zugfahrzeug Pferdetransport",
+		"short_name": "Zugfahrzeug Pferd",
+		"class": [],
+		"class_alias": [],
+		"cost": 5000,
+		"personal": {
+			"max": 6
+		},
+		"building": [11]
 	}
 ]
