@@ -2605,5 +2605,63 @@
 			"max": 6
 		},
 		"building": [11]
+	},
+	{
+		"id": 144,
+		"name": "FüKW (THW)",
+		"short_name": "FüKW",
+		"class": [],
+		"class_alias": [],
+		"cost": 15000,
+		"personal": {
+			"max": 4
+		},
+		"building": [9]
+	},
+	{
+		"id": 145,
+		"name": "FüKomKW",
+		"short_name": "FüKomKW",
+		"class": [],
+		"class_alias": [],
+		"cost": 25000,
+		"personal": {
+			"max": 7
+		},
+		"building": [9]
+	},
+	{
+		"id": 146,
+		"name": "Anh FüLa",
+		"short_name": "FüLa",
+		"class": [],
+		"class_alias": [],
+		"cost": 10000,
+		"building": [9]
+	},
+	{
+		"id": 147,
+		"name": "FmKW",
+		"short_name": "FmKW",
+		"class": [],
+		"class_alias": [],
+		"cost": 20000,
+		"personal": {
+			"max": 7
+		},
+		"building": [9]
+	},
+	{
+		"id": 148,
+		"name": "MTW-FGr K",
+		"short_name": "MTW-FGr K",
+		"class": [],
+		"class_alias": [],
+		"cost": 20000,
+		"personal": {
+			"min": 4,
+			"max": 4
+		},
+		"building": [9]
 	}
 ]
