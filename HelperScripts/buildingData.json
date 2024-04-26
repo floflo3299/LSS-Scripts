@@ -477,6 +477,12 @@
                 "name": "Trupp Unbemannte Luftfahrtsysteme",
                 "cost": 50000,
                 "duration": 5
+            },
+            {
+                "id": 13,
+                "name": "Fachzug Führung und Kommunikation",
+                "cost": 300000,
+                "duration": 7
             }
         ]
     },
