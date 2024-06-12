@@ -959,5 +959,40 @@
                 "duration": 5
             }
         ]
-    }
+    },
+    {
+        "id": 25,
+        "name": "Bergrettungswache",
+        "class": [
+            "mountain_rescue"
+        ],
+        "class_alias": [],
+        "max_level": 14,
+        "extensions": [
+            {
+                "id": 0,
+                "name": "Höhenrettung",
+                "cost": 50000,
+                "duration": 5
+            },
+            {
+                "id": 1,
+                "name": "Drohneneinheit",
+                "cost": 75000,
+                "duration": 5
+            },
+            {
+                "id": 2,
+                "name": "Rettungshundestaffel",
+                "cost": 350000,
+                "duration": 5
+            },
+            {
+                "id": 3,
+                "name": "Rettungsdienst",
+                "cost": 100000,
+                "duration": 7
+            }
+        ]
+    },
 ]
