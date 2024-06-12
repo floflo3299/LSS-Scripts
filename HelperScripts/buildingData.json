@@ -261,7 +261,14 @@
         "class": [],
         "class_alias": [],
         "max_level": null,
-        "extensions": []
+        "extensions": [
+            {
+                "id": 0,
+                "name": " Windenrettung",
+                "cost": 200000,
+                "duration": 3
+            }
+        ]
     },
     {
         "id": 6,
