@@ -264,7 +264,7 @@
         "extensions": [
             {
                 "id": 0,
-                "name": " Windenrettung",
+                "name": "Windenrettung",
                 "cost": 200000,
                 "duration": 3
             }
@@ -659,13 +659,13 @@
         "extensions": [
             {
                 "id": 0,
-                "name": " Außenlastbehälter",
+                "name": "Außenlastbehälter",
                 "cost": 200000,
                 "duration": 3
             },
             {
                 "id": 1,
-                "name": " Windenrettung",
+                "name": "Windenrettung",
                 "cost": 200000,
                 "duration": 3
             }
@@ -994,5 +994,5 @@
                 "duration": 7
             }
         ]
-    },
+    }
 ]
