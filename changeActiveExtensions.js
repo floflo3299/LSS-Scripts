@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         de-/activate Extensions
 // @namespace    http://tampermonkey.net/
-// @version      1.3.3
+// @version      1.3.4
 // @description  Change the status of expensions and buildings
 // @author       Silberfighter
 // @include      *://www.leitstellenspiel.de/
@@ -106,7 +106,7 @@
     });
 
 
-    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24];
+    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24,25];
     const extensionsToIgnore = ["Abrollbehälter-Stellplatz", "Großwache", "Zelle"];
 
     overlayContent.innerHTML += `
