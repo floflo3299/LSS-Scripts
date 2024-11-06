@@ -994,5 +994,48 @@
                 "duration": 7
             }
         ]
+    },
+    {
+        "id": 26,
+        "name": "Seenotrettungswache",
+        "class": [],
+        "class_alias": [],
+        "max_level": 4,
+        "extensions": []
+    },
+    {
+        "id": 27,
+        "name": "Schule für Seefahrt und Seenotrettung",
+        "class": [],
+        "class_alias": [],
+        "max_level": 3,
+        "extensions": [
+            {
+                "id": 0,
+                "name": "Weiterer Klassenraum",
+                "cost": 400000,
+                "duration": 7
+            },
+            {
+                "id": 1,
+                "name": "Weiterer Klassenraum",
+                "cost": 400000,
+                "duration": 7
+            },
+            {
+                "id": 2,
+                "name": "Weiterer Klassenraum",
+                "cost": 400000,
+                "duration": 7
+            }
+        ]
+    },
+    {
+        "id": 28,
+        "name": "Hubschrauberstation (Seenotrettung)",
+        "class": [],
+        "class_alias": [],
+        "max_level": 1,
+        "extensions": []
     }
 ]
