@@ -2664,4 +2664,104 @@
 		},
 		"building": [9]
 	}
+
+
+
+
+
+
+
+
+
+
+
+	,
+	{
+		"id": 159,
+		"name": "Seenotrettungskreuzer",
+		"short_name": "Seenotrettungskreuzer",
+		"class": [],
+		"class_alias": [],
+		"cost": 75000,
+		"personal": {
+			"min": 4,
+			"max": 9
+		},
+		"building": [26],
+		"additional": {
+			"qualification": [{"names": ["Seenotretter"], "min": 4, "max": 9}]
+		}
+	},
+	{
+		"id": 160,
+		"name": "Seenotrettungsboot",
+		"short_name": "Seenotrettungsboot",
+		"class": [],
+		"class_alias": [],
+		"cost": 50000,
+		"personal": {
+			"min": 1,
+			"max": 2
+		},
+		"building": [26]
+	},
+	{
+		"id": 161,
+		"name": "Hubschrauber (Seenotrettung)",
+		"short_name": "Hubschrauber (Seenotrettung)",
+		"class": [],
+		"class_alias": [],
+		"cost": 400000,
+		"personal": {
+			"min": 3,
+			"max": 4
+		},
+		"building": [28],
+		"additional": {
+			"qualification": [	{"names": ["Hubschrauberpilot (Seenotrettung)"], "min": 1, "max": 4},
+						{"names": ["Windenoperator"], "min": 1, "max": 4},
+						{"names": ["Wasserrettungsausbildung für Notfallsanitäter"], "min": 1, "max": 4}]
+		}
+	},
+	{
+		"id": 162,
+		"name": "RW-Schiene",
+		"short_name": "RW-Schiene",
+		"class": [],
+		"class_alias": [],
+		"cost": 18500,
+		"personal": {
+			"min": 1,
+			"max": 3
+		},
+		"building": [0],
+		"additional": {
+			"qualification": [{"names": ["Bahnrettung"], "min": 1, "max": 3}]
+		}
+	},
+	{
+		"id": 163,
+		"name": "HLF Schiene",
+		"short_name": "HLF Schiene",
+		"class": [],
+		"class_alias": [],
+		"cost": 30000,
+		"personal": {
+			"min": 1,
+			"max": 9
+		},
+		"building": [0],
+		"additional": {
+			"qualification": [{"names": ["Bahnrettung"], "min": 1, "max": 3}]
+		}
+	},
+	{
+		"id": 164,
+		"name": "AB-Schiene",
+		"short_name": "AB-Schiene",
+		"class": [],
+		"class_alias": [],
+		"cost": 7000,
+		"building": [0]
+	}
 ]
