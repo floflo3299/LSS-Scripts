@@ -123,6 +123,42 @@
                 "name": "Verpflegungsdienst",
                 "cost": 200000,
                 "duration": 5
+            },
+            {
+                "id": 20,
+                "name": "Anhänger-Stellplatz",
+                "cost": 75000,
+                "duration": 3
+            },
+            {
+                "id": 21,
+                "name": "Anhänger-Stellplatz",
+                "cost": 75000,
+                "duration": 3
+            },
+            {
+                "id": 22,
+                "name": "Anhänger-Stellplatz",
+                "cost": 75000,
+                "duration": 3
+            },
+            {
+                "id": 23,
+                "name": "Anhänger-Stellplatz",
+                "cost": 75000,
+                "duration": 3
+            },
+            {
+                "id": 24,
+                "name": "Anhänger-Stellplatz",
+                "cost": 75000,
+                "duration": 3
+            },
+            {
+                "id": 25,
+                "name": "Bahnrettung",
+                "cost": 125000,
+                "duration": 5
             }
         ]
     },
