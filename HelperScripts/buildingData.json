@@ -600,6 +600,12 @@
                 "name": "Reiterstaffel",
                 "cost": 300000,
                 "duration": 5
+            },
+            {
+                "id": 10,
+                "name": "Sonderfahrzeug: Lautsprecherkraftwagen",
+                "cost": 100000,
+                "duration": 5
             }
         ]
     },
