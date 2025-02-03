@@ -2763,5 +2763,14 @@
 		"class_alias": [],
 		"cost": 7000,
 		"building": [0, 18]
+	},
+	{
+		"id": 165,
+		"name": "Lautsprecherkraftwagen",
+		"short_name": "LauKw",
+		"class": [],
+		"class_alias": [],
+		"cost": 32000,
+		"building": [5, 5]
 	}
 ]
