@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Settings ELW 1 SEG from start screen
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      1.1
 // @description  change all ELW 1 SEG settings from the start screen
 // @author       Silberfighter
 // @include      *://www.leitstellenspiel.de/
@@ -126,6 +126,7 @@
     <div><label class="ELWSEG-overlay-content-entry"><input id="elw1seg_hospital_automatic" type="checkbox" style="margin-right: 10px;" value="1">Rettungsdienst automatisch ein Krankenhaus zuweisen</label></div>
     <div><label class="ELWSEG-overlay-content-entry"><input id="elw1seg_hospital_own" type="checkbox" style="margin-right: 10px;" value="1">Nur eigene Krankenhäuser anfahren</label></div>
     <div><label class="ELWSEG-overlay-content-entry"><input id="elw1seg_hospital_right_building_extension" type="checkbox" style="margin-right: 10px;" value="1">Nur an Krankenhäuser mit passenden Ausbau einliefern</label></div>
+    <div><label class="ELWSEG-overlay-content-entry"><input id="vehicle_hospital_automatic_return" type="checkbox" style="margin-right: 10px;" value="1">Rettungsdienst kehrt nach automatischem Transport zum Einsatz zurück</label></div>
 
     <div style="height: 45px;">
         <div class="col-sm-3"><label>Maximale Abgabe vom Creditsverdienst</label></div>
@@ -186,6 +187,8 @@
         let maxCredits = document.getElementById("elw1seg_hospital_max_price").value;
         let maxDistance = document.getElementById("elw1seg_hospital_max_distance").value;
         let freeSpace = document.getElementById("elw1seg_hospital_free_space").value;
+        let automaticReturn = document.getElementById("vehicle_hospital_automatic_return").value;
+
 
 
         /*        console.log(automatic);
@@ -193,7 +196,8 @@
         console.log(correctExtension);
         console.log(maxCredits);
         console.log(maxDistance);
-        console.log(freeSpace);*/
+        console.log(freeSpace);
+        console.log(automaticReturn);*/
 
         let relevantVehicles = allVehicles.filter(e => Number(e.vehicle_type) == 59);
         console.log(relevantVehicles);
@@ -210,6 +214,7 @@
                                                                  "vehicle[hospital_max_price]" : maxCredits,
                                                                  "vehicle[hospital_max_distance]" : maxDistance,
                                                                  "vehicle[hospital_free_space]" : freeSpace,
+                                                                 "vehicle[hospital_automatic_return]" : automaticReturn,
                                                                 });
 
 
