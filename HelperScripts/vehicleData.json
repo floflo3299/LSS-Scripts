@@ -2771,6 +2771,54 @@
 		"class": [],
 		"class_alias": [],
 		"cost": 32000,
-		"building": [5, 5]
+		"building": [5]
+	}
+
+
+	,
+	{
+		"id": 171,
+		"name": "GW TeSi",
+		"short_name": "GW TeSi",
+		"class": [],
+		"class_alias": [],
+		"cost": 35000,
+		"building": [12]
+	},
+	{
+		"id": 172,
+		"name": "LKW Technik (Notstrom)",
+		"short_name": "LKW Technik",
+		"class": [],
+		"class_alias": [],
+		"cost": 30000,
+		"building": [12]
+	},
+	{
+		"id": 173,
+		"name": "MTW TeSi",
+		"short_name": "MTW TeSi",
+		"class": [],
+		"class_alias": [],
+		"cost": 20000,
+		"building": [12]
+	},
+	{
+		"id": 174,
+		"name": "Anh TeSi",
+		"short_name": "Anh TeSi",
+		"class": [],
+		"class_alias": [],
+		"cost": 10000,
+		"building": [12]
+	},
+	{
+		"id": 175,
+		"name": "NEA50",
+		"short_name": "NEA50",
+		"class": [],
+		"class_alias": [],
+		"cost": 10000,
+		"building": [12]
 	}
 ]
