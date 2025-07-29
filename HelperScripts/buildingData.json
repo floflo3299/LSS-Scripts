@@ -655,6 +655,12 @@
                 "name": "Betreuungs- und Verpflegungsdienst",
                 "cost": 200000,
                 "duration": 5
+            },
+            {
+                "id": 6,
+                "name": "Technik und Sicherheit",
+                "cost": 200000,
+                "duration": 5
             }
         ]
     },
