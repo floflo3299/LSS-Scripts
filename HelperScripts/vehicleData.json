@@ -2820,5 +2820,46 @@
 		"class_alias": [],
 		"cost": 10000,
 		"building": [12]
+	},
+
+	
+	{
+		"id": 176,
+		"name": "Lkw 7 Lbw (FGr Log-V)",
+		"short_name": "Lkw 7 Lbw (FGr Log-V)",
+		"class": [],
+		"class_alias": [],
+		"cost": 15000,
+		"personal": {
+			"min": 3,
+			"max": 3
+		},
+		"building": [9]
+	},
+	{
+		"id": 177,
+		"name": "MTW-FGr Log-V",
+		"short_name": "MTW-FGr Log-V",
+		"class": [],
+		"class_alias": [],
+		"cost": 2500,
+		"personal": {
+			"min": 5,
+			"max": 5
+		},
+		"building": [9]
+	},
+	{
+		"id": 178,
+		"name": "Anh 12 Lbw (FGr Log-V)",
+		"short_name": "Anh 12 Lbw (FGr Log-V)",
+		"class": [],
+		"class_alias": [],
+		"cost": 5000,
+		"personal": {
+			"min": 0,
+			"max": 0
+		},
+		"building": [9]
 	}
 ]
