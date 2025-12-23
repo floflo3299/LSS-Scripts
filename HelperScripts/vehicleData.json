@@ -2432,7 +2432,7 @@
 		},
 		"building": [12],
 		"additional": {
-			"qualification": [{"names": ["SEG Drohne"]}]
+			"qualification": [{"names": ["Drohnenoperator"]}]
 		},
 		"prerequisites": {
 			"seg": 1
