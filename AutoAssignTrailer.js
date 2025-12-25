@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  try to take over the world!
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
