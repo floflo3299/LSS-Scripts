@@ -64,8 +64,15 @@
 
 
 
-        //------------ab hier nur bearbeiten, wenn ihr wisst was ihr macht
     ];
+
+
+
+    // setzte es auf    true     => wenn eine aktuelle Anhänger-Zugfahrzeug-Zuweisung nicht den obigen Einstellungen entspricht, wird es korrigiert.
+    //                              z.B. aktuell gibt es einen Anh DLE, welcher von einem GKW gezogen wird, die Einstellungen legen aber einen MLW 5 fest, wird dieser "Fehler" behoben und der MLW 5 wird zugewiesen
+    // setzte es auf    false     => "falsche" Zuweisungen werden nicht behoben
+    const fix_wrong_assignments = false
+    //------------ab hier nur bearbeiten, wenn ihr wisst was ihr macht
 
     var currentlyRunning = false
 
@@ -102,7 +109,7 @@
 
                 //if(foundTrailers[n].tractive_vehicle_id == null || vehicleAssignedMultipleTimes(allVehicles, foundTrailers[n].tractive_vehicle_id)){
                 if(foundTrailers[n].tractive_vehicle_id == null || foundTrailers[n].tractive_random == true ||
-                   foundTrailers[n].tractive_vehicle_id != null && foundTrailers[n].tractive_random == false && foundTowingVehicle.findIndex(obj => obj.id == foundTrailers[n].tractive_vehicle_id) == -1){ // wenn Zugfahrzeug existiert, aber kein zulässiges ist, weise es neu zu
+                   fix_wrong_assignments && foundTrailers[n].tractive_vehicle_id != null && foundTrailers[n].tractive_random == false && foundTowingVehicle.findIndex(obj => obj.id == foundTrailers[n].tractive_vehicle_id) == -1){ // wenn Zugfahrzeug existiert, aber kein zulässiges ist, weise es neu zu
 
                     if(foundTrailers[n].tractive_vehicle_id != null){
                         let index = allVehicles.findIndex((obj => obj.id == foundTrailers[n].id));
