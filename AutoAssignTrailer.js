@@ -51,9 +51,15 @@
         //---- AB HIER EINTRÄGE EINFÜGEN
 
 
+        [102,123], //Anh 7      LKW 7 Lbw (WP)
+        [101,100], //Anh SwPu   MLW 4
         [43,42],   //BRmG R     LKW K 9
+        [44,45],   //Anh DLE    MLW 5
+        [110,41],  //NEA50      MzGW (FGr N)
         [112,122], //NEA200     LKW 7 Lbw (E)
         [70,64],   //MZB        GW-Wasserrettung
+        [146,145], //Anh FüLa   FüKomKw
+        [132,133], //Anh FKH    Bt LKW
 
 
 
@@ -95,7 +101,8 @@
                 messageText.innerText = (links.length-i)+" Fahrzeugtypen verbleibend\n"+(foundTrailers.length-n-1)+" Fahrzeuge vom aktuellen Typ verbleibend\nFENSTER NICHT SCHLIEßEN";
 
                 //if(foundTrailers[n].tractive_vehicle_id == null || vehicleAssignedMultipleTimes(allVehicles, foundTrailers[n].tractive_vehicle_id)){
-                if(foundTrailers[n].tractive_vehicle_id == null || foundTrailers[n].tractive_random == true){
+                if(foundTrailers[n].tractive_vehicle_id == null || foundTrailers[n].tractive_random == true ||
+                   foundTrailers[n].tractive_vehicle_id != null && foundTrailers[n].tractive_random == false && foundTowingVehicle.findIndex(obj => obj.id == foundTrailers[n].tractive_vehicle_id) == -1){ // wenn Zugfahrzeug existiert, aber kein zulässiges ist, weise es neu zu
 
                     if(foundTrailers[n].tractive_vehicle_id != null){
                         let index = allVehicles.findIndex((obj => obj.id == foundTrailers[n].id));
@@ -153,28 +160,6 @@
     function delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     let baseID = "TrailerAssignment";
@@ -272,14 +257,5 @@
         messageText.style.fontWeight = "900";
         document.getElementById(baseID + "OverlayBody").appendChild(messageText);
     }
-
-
-
-
-
-
-
-
-
 
 })();
