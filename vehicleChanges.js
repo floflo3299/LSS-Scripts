@@ -235,7 +235,6 @@
             aVehicles = await fetchAllVehiclesV2();
 
             document.getElementById("veChModal_WaitMessage").className = "hidden";
-            return;
         }
 
 
