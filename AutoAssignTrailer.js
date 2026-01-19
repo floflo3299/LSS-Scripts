@@ -2,7 +2,7 @@
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
 // @version      1.2.0
-// @description  try to take over the world!
+// @description  weist automatisch Anhänger entsprechenden Zugfahrzeugen zu.
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
