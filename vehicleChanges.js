@@ -1,16 +1,20 @@
 
 // ==UserScript==
 // @name         vehicleChanges
-// @version      2.0.3
+// @version      2.1.0
 // @description  ändert die Einstellungen von AB, SEG ELW, GRTW, Außenlastbehälter und DGL
 // @author       original from DrTraxx (fixed from other)
 // @include      /^https?:\/\/(w{3}\.)?(polizei\.)?leitstellenspiel\.de\/$/
+// @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
 // @grant        GM_addStyle
 // ==/UserScript==
 /* global $, user_id, I18n */
 
 (async function () {
     'use strict';
+
+    let aVehicles = [];
+    let currently_loading = false;
 
     /**
        * Vehicles-API nach Fahrzeugtypen durchsuchen
@@ -19,7 +23,6 @@
        */
     const returnApiVehicles = async ids => {
         return new Promise(async resolve => {
-            const aVehicles = await $.getJSON('/api/vehicles');
             resolve(aVehicles.filter(v => ids.includes(v.vehicle_type)));
         });
     };
@@ -224,6 +227,22 @@
      * @returns {String} HTML fuer das Modal
      */
     const buildModalHtml = async (target, ids) => {
+
+        if(aVehicles.length == 0 && !currently_loading){
+            document.getElementById("veChModal_WaitMessage").className = "";
+
+            currently_loading = true;
+            aVehicles = await fetchAllVehiclesV2();
+
+            document.getElementById("veChModal_WaitMessage").className = "hidden";
+            return;
+        }
+
+
+        if(aVehicles.length == 0){
+            return;
+        }
+
         selectedVehicles = await returnApiVehicles(ids);
         $("#veChModalBody").html(getTargetHtml(target, selectedVehicles.length));
     };
@@ -271,13 +290,14 @@ overflow-y: auto;
 
     $("body")
         .prepend(
-            `<div class="modal fade bd-example-modal-lg" id="veChModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        `<div class="modal fade bd-example-modal-lg" id="veChModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&#x274C;</span>
                     </button>
+                    <h1 id="veChModal_WaitMessage" class="hidden" style="color:red;"><center>BITTE WARTEN, Daten laden</center></h1>
                     <h3 class="modal-title"><center>Fahrzeugeinstellungen</center></h3>
                     <div class="btn-group">
                       <a class="btn btn-primary btn-xs ve_ch_btn_trigger" types="[47,48,49,54,62,71,77,78]" target="container">Abrollbehälter</a>
@@ -304,7 +324,7 @@ overflow-y: auto;
 
     $("body").on("click", ".ve_ch_btn_trigger", async function () {
         const target = $(this).attr("target"),
-            types = JSON.parse($(this).attr("types"));
+              types = JSON.parse($(this).attr("types"));
 
         buildModalHtml(target, types);
     });
