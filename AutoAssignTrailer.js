@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
+// @version      1.2.0
 // @description  try to take over the world!
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
@@ -89,11 +89,12 @@
         currentlyRunning = true
 
 
-        if (!sessionStorage.c2Vehicles || JSON.parse(sessionStorage.c2Vehicles).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Vehicles).userId != user_id) {
-            await $.getJSON('/api/vehicles').done(data => sessionStorage.setItem('c2Vehicles', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
+        /*if (!sessionStorage.c2Vehicles || JSON.parse(sessionStorage.c2Vehicles).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Vehicles).userId != user_id) {
+            await fetchAllVehiclesV2().then(data => sessionStorage.setItem('c2Vehicles', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compressToUTF16(JSON.stringify(data)), userId: user_id })));
         }
 
-        var allVehicles = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.c2Vehicles).value));
+        var allVehicles = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.c2Vehicles).value));*/
+        var allVehicles = await fetchAllVehiclesV2();
 
 
         //console.log(allVehicles.length)
