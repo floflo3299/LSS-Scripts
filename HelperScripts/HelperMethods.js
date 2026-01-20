@@ -55,7 +55,8 @@ async function fetchAllVehiclesV2() {
 async function fetchWithRetry(url, retries = 5, delayMs = 1000) {
     for (let i = 0; i < retries; i++) {
         try {
-            const res = await fetch(url);
+            //const res = await fetch(url);
+            const res = await fetch(url, {"_method": "get", "authenticity_token": $("meta[name=csrf-token]").attr("content") });
 
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}`);
