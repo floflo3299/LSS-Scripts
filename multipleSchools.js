@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         MultipleSchools
-// @version      1.0.11
+// @version      1.1.0
 // @description  Use more than 4 classes at once
 // @author       Silberfighter (original from Allure149)
 // @match        https://*.leitstellenspiel.de/buildings/*
@@ -116,7 +116,7 @@
     createGlobalOptions();
 
     $("#building_rooms_use").on("change", function(){
-        update_schooling_free();
+        //update_schooling_free();
     });
 
     $("#cbxMultipleClassrooms").on("change", function(a){
@@ -132,7 +132,7 @@
     });
 
     $("#multipleClassesSelect").on("change", function(){
-        update_schooling_free();
+        //update_schooling_free();
 
         var classCounter = 0;
 
@@ -164,13 +164,7 @@
             if(usePersonal) personalIds.push(el.value);
         }
 
-        var education = (function() {
-            for(var counter in $("form input.radio")){
-                var el = $("form input.radio")[counter];
-
-                if(el && el.checked) return +el.attributes.value.value;
-            }
-        });
+        var education = document.querySelector('#education_select').value;
 
         var classCounter = +$("#building_rooms_use")[0].value;
         var auswertung = {"schulen": 0, "klassen": classCounter};
@@ -191,7 +185,8 @@
             var usedClasses = classCounter <= school.free ? classCounter : school.free;
 
             var params = {
-                "education": education,
+                "commit": "Ausbilden",
+                "education_select": education,
                 "personal_ids": persTemp,
                 "building_rooms_use": usedClasses
             }
@@ -202,6 +197,8 @@
                     "cost": $("#alliance_cost")[0].value
                 };
             }
+
+            console.log(params);
 
             await $.post("/buildings/" + school.id + "/education", params, function(){
                 $("#multipleClassesOutput").text(`${school.name} wurde über ${usedClasses} ${(usedClasses==1?"neuen Lehrgang":"neue Lehrgänge")} informiert.`);
