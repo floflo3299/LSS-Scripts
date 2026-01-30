@@ -1,18 +1,21 @@
 // ==UserScript==
 // @name        Lehrgänge leichter mit Personal füllen
 // @namespace    http://tampermonkey.net/
-// @version      1.2.1
+// @version      1.3.0
 // @description  enables the filtering of buildings in the creation of courses and select people faster!
-// @author       Silberfighter
+// @author      Silberfighter
 // @include      https://www.leitstellenspiel.de/buildings/*
 // @include      https://www.leitstellenspiel.de/schoolings/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
+// @icon        https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
 // @grant        none
 // ==/UserScript==
 
 (async function() {
     'use strict';
+
+
+    //------- you can change this variables -------
 
     //Mit dieser Variable können Standard-Filter-Werte für einzelne Lehrgänge festgelegt werden
     //Dabei muss man wie folgt vorgehen:
@@ -43,38 +46,42 @@
 
     //7. Diesen nun generierten Eintrag fügst du unten zwischen den beiden Kommentaren ein. Ob du alle Einträge in eine Zeile schreibst oder in eine Zeile nur einen Eintrag ist egal.
 
-    //Die zur Zeit darin befindlichen Einträge sind Beispiele und können rausgelöscht werden
-
     var standardFilterWerte = [
         //***** unterhalb von hier einfügen *****
 
-        ["SEK","11","SEK","18","53"],
-        ["MEK","11","MEK","18","53"],
+        
+        ["SEK","11","SEK","42","53"],
+        ["MEK","11","MEK","42","53"],
 
 
         //***** oberhalb von hier einfügen *****
     ];
 
+    //------- after here change only stuff if you know what you are doing -------
 
     var defaultValueSettings = [["","","","",""]]
 
-    var feuerwehrAusbauten = ["Rettungsdienst-Erweiterung","Wasserrettungs-Erweiterung","Flughafen-Erweiterung","Großwache","Werkfeuerwehr","Abrollbehälter-Stellplatz","Lüfter-Erweiterung","NEA50-Erweiterung","NEA200-Erweiterung"];
-    var thwAusbauten = ["Zugtrupp","Fachgruppe Räumen","Fachgruppe Wassergefahren","Fachgruppe Ortung","Fachgruppe Wasserschaden/Pumpen","Fachgruppe Schwere Bergung","Fachgruppe Elektroversorgung"];
-    var polizeiAusbauten = ["Technischer Zug: Wasserwerfer","SEK","MEK","Diensthundestaffel","Kriminalpolizei-Erweiterung","Dienstgruppenleitung-Erweiterung","Außenlastbehälter-Erweiterung"];
-    var rettungsDienstAusbauten = ["Wasserrettungs-Erweiterung","Rettungshundestaffel"];
-
+    //Füge hier neue Gebäude hinzu, damit sie mit berücksichtigt werden
     var feuerwehrGebaeude = [["Feuerwache",0],["Feuerwache (Kleinwache)",18]];
     var thwGebaeude = [["THW Ortsverband",9]];
-    var polizeiGebaeude = [["Polizeiwache",6],["Polizeiwache (Kleinwache)",19],["Bereitschaftspolizei",11],["Polizeihubschrauber-Station",13],["Polizei-Sondereinheit",17]];
-    var rettungsDienstGebaeude = [["Rettungswache",2],["Rettungswache (Kleinwache)",20],["Rettungshubschrauber-Station",5],["Rettungshundestaffel",21],["SEG",12],["Wasserrettungswache",15]];
+    var polizeiGebaeude = [["Polizeiwache",6],["Polizeiwache (Kleinwache)",19],["Bereitschaftspolizei",11],["Polizeihubschrauber-Station",13],["Polizei-Sondereinheit",17],["Reiterstaffel",24]];
+    var rettungsDienstGebaeude = [["Rettungswache",2],["Rettungswache (Kleinwache)",20],["Rettungshubschrauber-Station",5],["Rettungshundestaffel",21],["SEG",12],["Wasserrettungswache",15],["Bergrettung",25]];
+    var seenotGebaude = [["Seenotrettungswache",26],["Hubschrauberstation (Seenotrettung)",28]];
+
 
     var buildings;
+
+    if($('#accordion').length == 0){
+        //if no buildings are listed (inside elem accordion), then do nothing => verbands school
+        return;
+    }
 
     if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
         await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
     }
-    
+
     buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
+
 
     var buildingType = 0;
     if(window.location.href.includes("leitstellenspiel.de/buildings/")){
@@ -109,27 +116,27 @@
     }
     var allBuil = [];
 
-    if (buildingType == 1 || buildingType == 3 || buildingType == 8 || buildingType == 10){
+    if (buildingType == 1 || buildingType == 3 || buildingType == 8 || buildingType == 10 || buildingType == 27){
 
-        var dropDownSelectionAusbau = [];
         var dropDownSelectionGebaeude = [];
 
         if (buildingType == 1){
-            dropDownSelectionAusbau = feuerwehrAusbauten;
             dropDownSelectionGebaeude = feuerwehrGebaeude;
         }
         if (buildingType == 3){
-            dropDownSelectionAusbau = rettungsDienstAusbauten;
             dropDownSelectionGebaeude = rettungsDienstGebaeude;
         }
         if (buildingType == 8){
-            dropDownSelectionAusbau = polizeiAusbauten;
             dropDownSelectionGebaeude = polizeiGebaeude;
         }
         if (buildingType == 10){
-            dropDownSelectionAusbau = thwAusbauten;
             dropDownSelectionGebaeude = thwGebaeude;
         }
+        if (buildingType == 27){
+            dropDownSelectionGebaeude = seenotGebaude;
+        }
+
+        var dropDownSelectionAusbau = getAvailablExtensions(dropDownSelectionGebaeude, buildings)
 
         //var building = cBuildings.filter(b => b.id == buildingID)[0];
 
@@ -246,63 +253,49 @@
 
         var setting = [];
 
-        var relevantRadioButtons = Array.prototype.slice.call(document.getElementsByTagName("input")).filter(e => e.getAttribute("class") == "radio");
-        relevantRadioButtons = relevantRadioButtons.filter(e => e.getAttribute("id").indexOf("education_") >= 0);
+        var sel_dropdown = document.querySelector('#education_select');
 
-        if(document.getElementsByTagName("h2").length > 0 && (document.getElementsByTagName("h2")[0] == null || document.getElementsByTagName("h2")[0].parentNode.className != "alert alert-info")){
-            setting = standardFilterWerte.filter((e) => e[0] === document.getElementsByTagName("h2")[0].innerText);
-        } else if(relevantRadioButtons.length > 0){
-            checkForRadioButtonChange();
-        }
+        if(sel_dropdown != null){
+            //own school
+            sel_dropdown.addEventListener('change', (e) => {
+                var text = e.target.selectedOptions[0]?.textContent.trim() || '';
+                text = text.replace(/\s*\(\d+\s*Tag(?:e)?\)\s*$/, '');
 
-        if(setting.length > 0){
-            $("#gebaeudeArt")[0].value = setting[0][1];
-            $("#ausbau")[0].value = setting[0][2];
-            $("#maxAusbildungen")[0].value = setting[0][3];
-            $("#minPerson")[0].value = setting[0][4];
-            $("#maxPerBuilding")[0].value = setting[0][3];
-            if(setting[0][3] == ""){
-                $("#maxPerBuilding")[0].value = 1;
-            }
-        }
-    }
+                setting = standardFilterWerte.filter((e) => e[0] === text);
 
-    var oldSelection = "";
 
-    async function checkForRadioButtonChange(){
-        var changed = false;
+                if(setting.length == 0){
+                    setting = defaultValueSettings;
+                }
 
-        for(let n = 0; n < relevantRadioButtons.length; n++){
-            if(relevantRadioButtons[n].checked){
-                var text = relevantRadioButtons[n].parentNode.innerText
-                text = text.substring(0, text.lastIndexOf("(")).trim();
 
-                if(oldSelection != text){
-                    oldSelection = text;
-                    setting = standardFilterWerte.filter((e) => e[0] === text);
-                    changed = true;
+                $("#gebaeudeArt")[0].value = setting[0][1];
+                $("#ausbau")[0].value = setting[0][2];
+                $("#maxAusbildungen")[0].value = setting[0][3];
+                $("#minPerson")[0].value = setting[0][4];
+                $("#maxPerBuilding")[0].value = setting[0][3];
+                if(setting[0][3] == ""){
+                    $("#maxPerBuilding")[0].value = 1;
+                }
+            });
+        }else{
+            //verbands school
+            if(document.getElementsByTagName("h2").length > 0 && (document.getElementsByTagName("h2")[0] == null || document.getElementsByTagName("h2")[0].parentNode.className != "alert alert-info")){
+                setting = standardFilterWerte.filter((e) => e[0] === document.getElementsByTagName("h2")[0].innerText);
 
-                    if(setting.length == 0){
-                        setting = defaultValueSettings;
-                    }
+                $("#gebaeudeArt")[0].value = setting[0][1];
+                $("#ausbau")[0].value = setting[0][2];
+                $("#maxAusbildungen")[0].value = setting[0][3];
+                $("#minPerson")[0].value = setting[0][4];
+                $("#maxPerBuilding")[0].value = setting[0][3];
+                if(setting[0][3] == ""){
+                    $("#maxPerBuilding")[0].value = 1;
                 }
             }
         }
 
-        if(changed){
-            $("#gebaeudeArt")[0].value = setting[0][1];
-            $("#ausbau")[0].value = setting[0][2];
-            $("#maxAusbildungen")[0].value = setting[0][3];
-            $("#minPerson")[0].value = setting[0][4];
-            $("#maxPerBuilding")[0].value = setting[0][3];
-            if(setting[0][3] == ""){
-                $("#maxPerBuilding")[0].value = 1;
-            }
-        }
-
-        await delay(500);
-        checkForRadioButtonChange();
     }
+
 
     var relevantBuildingIDs = [];
     var oldAusbauSelection = NaN;
@@ -366,6 +359,22 @@
 
         await delay(500);
         filterBuildings();
+    }
+
+    function getAvailablExtensions(relevantBuildings, allBuildings){
+        const ids = relevantBuildings.map(([, value]) => value);
+
+        let temp = allBuildings.filter(b => ids.includes(b.building_type));
+
+        temp = temp.map(entry => entry.extensions);
+        temp = temp.flat();
+        temp = temp.map(entry => entry.caption);
+
+        temp = [...new Set(temp)];
+
+        //console.log(temp);
+
+        return temp;
     }
 
     function delay(milliseconds){
@@ -438,11 +447,11 @@
         if(building.getElementsByClassName("label label-success").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-success")[0].innerHTML) || 0;
         }
-        
+        //console.log(returnValue);
         if(building.getElementsByClassName("label label-info").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-info")[0].innerHTML) || 0;
         }
-        
+        console.log(returnValue);
         return returnValue;
     }
 
