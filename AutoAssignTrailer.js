@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto-Assign Trailes to Vehicles
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.3.0
 // @description  weist automatisch Anhänger entsprechenden Zugfahrzeugen zu.
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/
@@ -48,6 +48,11 @@
         // Zum Aktivieren des automatischen Zuweisens öffnet das Menü "Skripte", welches sich auf der Hauptseite oben in der Reihe (wo auch eure Credits angezeigt werden) ganz links befindet.
         // Wählt dort "auto Assign Trailer" oder in deutsch "automatisches Anhänger-Zuweisen" aus.
 
+        // Falls du mehrere Zugfahrzeuge für den selben Anhängertyp hast, füge den Eintrag mehrfach hinzu. Z.B. kann in der Wasserrettungswache das MZB-Anhänger sowohl vom GW-Taucher als auch GW-Wasserrettung gezogen werden.
+        // Falls beide Fahrzeuge als Zugfahrzeug infrage kommen sollen, füge es wie folgt hinzu:
+        //     [70,63],   //MZB        GW-Taucher
+        //     [70,64],   //MZB        GW-Wasserrettung
+
         //---- AB HIER EINTRÄGE EINFÜGEN
 
 
@@ -57,6 +62,7 @@
         [44,45],   //Anh DLE    MLW 5
         [110,41],  //NEA50      MzGW (FGr N)
         [112,122], //NEA200     LKW 7 Lbw (E)
+        [70,63],   //MZB        GW-Taucher
         [70,64],   //MZB        GW-Wasserrettung
         [146,145], //Anh FüLa   FüKomKw
         [132,133], //Anh FKH    Bt LKW
@@ -71,12 +77,13 @@
     // setzte es auf    true     => wenn eine aktuelle Anhänger-Zugfahrzeug-Zuweisung nicht den obigen Einstellungen entspricht, wird es korrigiert.
     //                              z.B. aktuell gibt es einen Anh DLE, welcher von einem GKW gezogen wird, die Einstellungen legen aber einen MLW 5 fest, wird dieser "Fehler" behoben und der MLW 5 wird zugewiesen
     // setzte es auf    false     => "falsche" Zuweisungen werden nicht behoben
-    const fix_wrong_assignments = false
+    const fix_wrong_assignments = true
 
 
 
 
-    
+
+
     //------------ab hier nur bearbeiten, wenn ihr wisst was ihr macht
 
     var currentlyRunning = false
@@ -94,7 +101,7 @@
         }
 
         var allVehicles = JSON.parse(LZString.decompressFromUTF16(JSON.parse(sessionStorage.c2Vehicles).value));*/
-        var allVehicles = await fetchAllVehiclesV2();
+        var allVehicles = await fetchAllVehiclesV2()
 
 
         console.log(`Anzahl Fahrzeuge: ${allVehicles.length}`)
@@ -103,11 +110,31 @@
 
 
         for(var i = 0; i < links.length; i++){
+
+            //check if it's the first entry for this trailerID and collect the possible tracting vehicles
+            let firstEntry = true;
+            let possibleVehicleIDs = [];
+
+            for(var j = 0; j < links.length; j++){
+                if(links[i][0] == links[j][0]){
+                    possibleVehicleIDs = possibleVehicleIDs.concat([links[j][1]]);
+
+                    if(j < i){
+                        firstEntry = false;
+                    }
+                }
+            }
+
+            if(!firstEntry){
+                continue;
+            }
+
+
             let foundTrailers = allVehicles.filter(e => e.vehicle_type == links[i][0]);
             //console.log(foundTrailers.length);
             //console.log(links[i]);
 
-            let foundTowingVehicle = allVehicles.filter(e => e.vehicle_type == links[i][1]);
+            let foundTowingVehicle = allVehicles.filter(e => possibleVehicleIDs.indexOf(e.vehicle_type) >= 0);
 
             for(var n = 0; n < foundTrailers.length; n++){
 
@@ -117,26 +144,31 @@
                 if(foundTrailers[n].tractive_vehicle_id == null || foundTrailers[n].tractive_random == true ||
                    fix_wrong_assignments && foundTrailers[n].tractive_vehicle_id != null && foundTrailers[n].tractive_random == false && foundTowingVehicle.findIndex(obj => obj.id == foundTrailers[n].tractive_vehicle_id) == -1){ // wenn Zugfahrzeug existiert, aber kein zulässiges ist, weise es neu zu
 
+                    //diese IF-Abfrage kann nur true sein, wenn ein Zugfahrzeug vorhanden ist, aber es kein zulässiges Zugfahrzeug ist
                     if(foundTrailers[n].tractive_vehicle_id != null){
                         let index = allVehicles.findIndex((obj => obj.id == foundTrailers[n].id));
                         allVehicles[index].tractive_vehicle_id = null
 
                         foundTrailers[n].tractive_vehicle_id = null
+
+                        //perform API call in case, that there is no new available traction vehicle
+                        await $.post("https://www.leitstellenspiel.de/vehicles/"+ foundTrailers[n].id, {"_method": "put", "authenticity_token": $("meta[name=csrf-token]").attr("content"), "vehicle[tractive_random]": 1, "vehicle[tractive_vehicle_id]": NaN});
+                        await delay(500);
                     }
 
                     //console.log("assigne trailer" + foundTrailers[n].id);
-                    let foundVehicles = foundTowingVehicle.filter(e => e.building_id == foundTrailers[n].building_id);
+                    let possibleVehicles = foundTowingVehicle.filter(e => e.building_id == foundTrailers[n].building_id);
 
-                    for(var j = 0; j < foundVehicles.length; j++){
-                        if(vehicleAlreadyAssigned(allVehicles, foundVehicles[j].id) == 0){
+                    for(j = 0; j < possibleVehicles.length; j++){
+                        if(vehicleAlreadyAssigned(allVehicles, possibleVehicles[j].id) == 0){
                             //console.log(foundTrailers[n].id);
-                            //console.log(foundVehicles[j].id);
+                            //console.log(possibleVehicles[j].id);
                             //console.log("");
-                            await $.post("https://www.leitstellenspiel.de/vehicles/"+ foundTrailers[n].id, {"_method": "put", "authenticity_token": $("meta[name=csrf-token]").attr("content"), "vehicle[tractive_random]": 0, "vehicle[tractive_vehicle_id]": foundVehicles[j].id});
+                            await $.post("https://www.leitstellenspiel.de/vehicles/"+ foundTrailers[n].id, {"_method": "put", "authenticity_token": $("meta[name=csrf-token]").attr("content"), "vehicle[tractive_random]": 0, "vehicle[tractive_vehicle_id]": possibleVehicles[j].id});
                             await delay(500);
                             let index = allVehicles.findIndex((obj => obj.id == foundTrailers[n].id));
                             //console.log(allVehicles[index])
-                            allVehicles[index].tractive_vehicle_id = foundVehicles[j].id
+                            allVehicles[index].tractive_vehicle_id = possibleVehicles[j].id
                             //console.log(allVehicles[index])
                             break;
                         }
@@ -173,6 +205,28 @@
     function delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     let baseID = "TrailerAssignment";
@@ -276,5 +330,27 @@
         messageText.style.fontWeight = "900";
         document.getElementById(baseID + "OverlayBody").appendChild(messageText);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 })();
