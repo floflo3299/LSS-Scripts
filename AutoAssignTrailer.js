@@ -77,7 +77,7 @@
     // setzte es auf    true     => wenn eine aktuelle Anhänger-Zugfahrzeug-Zuweisung nicht den obigen Einstellungen entspricht, wird es korrigiert.
     //                              z.B. aktuell gibt es einen Anh DLE, welcher von einem GKW gezogen wird, die Einstellungen legen aber einen MLW 5 fest, wird dieser "Fehler" behoben und der MLW 5 wird zugewiesen
     // setzte es auf    false     => "falsche" Zuweisungen werden nicht behoben
-    const fix_wrong_assignments = true
+    const fix_wrong_assignments = false;
 
 
 
