@@ -97,7 +97,7 @@
         var allVehicles = await fetchAllVehiclesV2();
 
 
-        //console.log(allVehicles.length)
+        console.log(`Anzahl Fahrzeuge: ${allVehicles.length}`)
 
         document.getElementById(baseID + "WaitMessage").className = "hidden";
 
