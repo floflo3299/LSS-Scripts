@@ -216,9 +216,15 @@
             transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 5px;
+
+            width: 650px;
             height: 650px;
-            width: 1000px;
+
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 40px);
+
             overflow-y: auto;
+            box-sizing: border-box;
         }
 
 
