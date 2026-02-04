@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         de-/activate Extensions
 // @namespace    http://tampermonkey.net/
-// @version      1.3.5
+// @version      1.3.6
 // @description  Change the status of expensions and buildings
 // @author       Silberfighter
 // @include      *://www.leitstellenspiel.de/*
 // @include      /^https?:\/\/(?:w{3}\.)?(?:polizei\.)?leitstellenspiel\.de\/$/
+// @exclude      *://www.leitstellenspiel.de/*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
