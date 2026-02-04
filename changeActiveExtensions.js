@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         de-/activate Extensions
 // @namespace    http://tampermonkey.net/
-// @version      1.3.4
+// @version      1.3.5
 // @description  Change the status of expensions and buildings
 // @author       Silberfighter
-// @include      *://www.leitstellenspiel.de/
+// @include      *://www.leitstellenspiel.de/*
 // @include      /^https?:\/\/(?:w{3}\.)?(?:polizei\.)?leitstellenspiel\.de\/$/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/HelperMethods.js
@@ -15,7 +15,7 @@
 
 (async function() {
 
-    createOrAssigneDropdownmenu("changeActiveExtensions", "change active Extensions", showOwnCustomOverlay);
+    createOrAssigneDropdownmenu("changeActiveExtensions", "de-/aktivieren von Ausbauten", showOwnCustomOverlay);
 
     //if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
     //    await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
@@ -68,9 +68,15 @@
             transform: translate(-50%, -50%);
             padding: 20px;
             border-radius: 5px;
-            height: 650px;
+
             width: 650px;
+            height: 650px;
+
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 40px);
+
             overflow-y: auto;
+            box-sizing: border-box;
         }
     `);
 
@@ -106,7 +112,7 @@
     });
 
 
-    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24,25];
+    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24,25,26,28];
     const extensionsToIgnore = ["Abrollbehälter-Stellplatz", "Großwache", "Zelle"];
 
     overlayContent.innerHTML += `
