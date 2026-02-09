@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Lehrgänge leichter mit Personal füllen
 // @namespace    http://tampermonkey.net/
-// @version      1.3.0
+// @version      1.4.0
 // @description  enables the filtering of buildings in the creation of courses and select people faster!
 // @author      Silberfighter
 // @include      https://www.leitstellenspiel.de/buildings/*
@@ -16,6 +16,10 @@
 
 
     //------- you can change this variables -------
+
+    //true    mit der Taste Q können die Personen ausgewählt werden (Taste "Auswählen" wird gedrückt) und mit E der/die Lehrgänge gestartet werden (Taste "Ausbilden" wird gedrückt)
+    //false   die Tastenbelegung geht nicht
+    const enable_keys = false;
 
     //Mit dieser Variable können Standard-Filter-Werte für einzelne Lehrgänge festgelegt werden
     //Dabei muss man wie folgt vorgehen:
@@ -59,6 +63,28 @@
 
     //------- after here change only stuff if you know what you are doing -------
 
+
+    if(enable_keys){
+        document.addEventListener("keydown", async (e) => {
+            // e.key is the actual character (respects keyboard layout + shift)
+            if (e.key.toLowerCase() === "q") {
+                // optional: avoid repeated firing when key is held down
+                if (e.repeat) return;
+
+                // your action here
+                autoSelectPeople();
+            }
+            if (e.key.toLowerCase() === "e") {
+                // optional: avoid repeated firing when key is held down
+                if (e.repeat) return;
+
+                // your action here
+                document.querySelector('input[name="commit"][type="submit"][value="Ausbilden"]').click();
+            }
+        });
+    }
+
+
     var defaultValueSettings = [["","","","",""]]
 
     //Füge hier neue Gebäude hinzu, damit sie mit berücksichtigt werden
@@ -76,11 +102,13 @@
         return;
     }
 
-    if (!sessionStorage.c2Buildings || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
+
+    if (!sessionStorage.getItem('c2Buildings') || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
+        console.log("load")
         await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
     }
 
-    buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value));
+    buildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.getItem('c2Buildings')).value));
 
 
     var buildingType = 0;
@@ -115,6 +143,7 @@
 
     }
     var allBuil = [];
+    var lehrgangsBezeichnung_SessionStorage = NaN;
 
     if (buildingType == 1 || buildingType == 3 || buildingType == 8 || buildingType == 10 || buildingType == 27){
 
@@ -136,6 +165,7 @@
             dropDownSelectionGebaeude = seenotGebaude;
         }
 
+        console.log(buildings.length)
         var dropDownSelectionAusbau = getAvailablExtensions(dropDownSelectionGebaeude, buildings)
 
         //var building = cBuildings.filter(b => b.id == buildingID)[0];
@@ -167,19 +197,23 @@
         $('#accordion').before(newWindow);
 
 
-        newWindow = document.createElement("div");
 
-        text = `
+        //Verbands-Gebäude haben derzeit keine Gebäudefilter-Knöpfe, deswegen die Unterscheidung
+        if(document.getElementsByClassName('btn building_selection').length == 0){
+            newWindow = document.createElement("div");
+
+            text = `
           Nach Gebäuden filtern
           <select id="gebaeudeArt" name="gebaeudeFiltern" style="display:inline-block; color: #000;">
                 <option value="">nicht filtern</option>`;
-        for(var i = 0; i < dropDownSelectionGebaeude.length; i++){
-            text += `<option value="` + dropDownSelectionGebaeude[i][1] +`">`+ dropDownSelectionGebaeude[i][0] +`</option>`;
-        }
-        text += `</select>`;
-        newWindow.innerHTML = text;
+            for(var i = 0; i < dropDownSelectionGebaeude.length; i++){
+                text += `<option value="` + dropDownSelectionGebaeude[i][1] +`">`+ dropDownSelectionGebaeude[i][0] +`</option>`;
+            }
+            text += `</select>`;
+            newWindow.innerHTML = text;
 
-        $('#accordion').before(newWindow);
+            $('#accordion').before(newWindow);
+        }
 
 
         newWindow = document.createElement("div");
@@ -188,7 +222,7 @@
           Nach Ausbauten filtern
           <select id="ausbau" name="ausbauFiltern" style="display:inline-block; color: #000;">
                 <option value="">nicht filtern</option>`;
-        for(i = 0; i < dropDownSelectionAusbau.length; i++){
+        for(let i = 0; i < dropDownSelectionAusbau.length; i++){
             text += `<option value="` + dropDownSelectionAusbau[i] +`">`+ dropDownSelectionAusbau[i] +`</option>`;
         }
         text += `</select>`;
@@ -258,10 +292,19 @@
         if(sel_dropdown != null){
             //own school
             sel_dropdown.addEventListener('change', (e) => {
-                var text = e.target.selectedOptions[0]?.textContent.trim() || '';
-                text = text.replace(/\s*\(\d+\s*Tag(?:e)?\)\s*$/, '');
+                var lehrgangsBezeichnung = e.target.selectedOptions[0]?.textContent.trim() || '';
+                lehrgangsBezeichnung = lehrgangsBezeichnung.replace(/\s*\(\d+\s*Tag(?:e)?\)\s*$/, '');
 
-                setting = standardFilterWerte.filter((e) => e[0] === text);
+                setting = standardFilterWerte.filter((e) => e[0] === lehrgangsBezeichnung);
+
+                lehrgangsBezeichnung_SessionStorage = "LSS_TrainingsPerBuidlding_" + lehrgangsBezeichnung;
+
+                if(e.target.value == ""){
+                    lehrgangsBezeichnung_SessionStorage = NaN;
+                }
+
+
+                checkNumberTrainedPersonal();
 
 
                 if(setting.length == 0){
@@ -269,7 +312,7 @@
                 }
 
 
-                $("#gebaeudeArt")[0].value = setting[0][1];
+                filterBuilding(setting[0][1]);
                 $("#ausbau")[0].value = setting[0][2];
                 $("#maxAusbildungen")[0].value = setting[0][3];
                 $("#minPerson")[0].value = setting[0][4];
@@ -283,7 +326,12 @@
             if(document.getElementsByTagName("h2").length > 0 && (document.getElementsByTagName("h2")[0] == null || document.getElementsByTagName("h2")[0].parentNode.className != "alert alert-info")){
                 setting = standardFilterWerte.filter((e) => e[0] === document.getElementsByTagName("h2")[0].innerText);
 
-                $("#gebaeudeArt")[0].value = setting[0][1];
+                lehrgangsBezeichnung_SessionStorage = "LSS_TrainingsPerBuidlding_" + document.getElementsByTagName("h2")[0].innerText;
+
+
+                checkNumberTrainedPersonal();
+
+                filterBuilding(setting[0][1]);
                 $("#ausbau")[0].value = setting[0][2];
                 $("#maxAusbildungen")[0].value = setting[0][3];
                 $("#minPerson")[0].value = setting[0][4];
@@ -296,18 +344,108 @@
 
     }
 
+    function checkNumberTrainedPersonal(){
+        //resets storage every hour, to compensate personal changes
+        if (!localStorage.getItem(lehrgangsBezeichnung_SessionStorage) || JSON.parse(localStorage.getItem(lehrgangsBezeichnung_SessionStorage)).lastUpdate < (new Date().getTime() - 60 * 1000 * 60)) {
+            saveNumberTrainedPersonal({});
+        }
+    }
+
+    function saveNumberTrainedPersonal(objectToSave){
+        console.log("SAVEJNLNJL");
+        localStorage.setItem(lehrgangsBezeichnung_SessionStorage, JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(objectToSave))}));
+    }
+
+    function loadNumberTrainedPersonal(){
+        console.log("LOAD");
+        if (lehrgangsBezeichnung_SessionStorage && localStorage.getItem(lehrgangsBezeichnung_SessionStorage)){
+            return JSON.parse(LZString.decompress(JSON.parse(localStorage.getItem(lehrgangsBezeichnung_SessionStorage)).value));
+        }
+        return {};
+    }
+
+
+    function filterBuilding(buildingID){
+        buildingID = parseInt(buildingID);
+
+        let allBuildingsBtn = document.getElementsByClassName('btn building_selection');
+        let allBuildingsIDs = [];
+
+        for(let i = 0; i < allBuildingsBtn.length; i++){
+            let buildingIDsOfBtn = JSON.parse(allBuildingsBtn[i].getAttribute("building_type_ids")).map(Number);
+
+            if(allBuildingsBtn[i].classList.contains('btn-danger') && isNaN(buildingID)){
+                allBuildingsBtn[i].click();
+                continue;
+            }
+
+            if(isNaN(buildingID)){
+                continue;
+            }
+            else if(allBuildingsBtn[i].classList.contains('btn-success') && !buildingIDsOfBtn.includes(buildingID)){
+                allBuildingsBtn[i].click();
+            }
+            else if(allBuildingsBtn[i].classList.contains('btn-danger') && buildingIDsOfBtn.includes(buildingID)){
+                allBuildingsBtn[i].click();
+            }
+        }
+
+        //Verbands-Gebäude haben derzeit keine Gebäudefilter-Knöpfe, deswegen die Unterscheidung
+        if(allBuildingsBtn.length > 0){
+            return [...new Set(allBuildingsIDs)];
+        }
+        else{
+            if(isNaN(buildingID)){
+                document.getElementById("gebaeudeArt").value = "";
+            }else{
+                document.getElementById("gebaeudeArt").value = buildingID;
+            }
+
+            return [buildingID];
+        }
+    }
+
+    function getToFilterBuildingIDs(){
+        let allBuildingsBtn = document.getElementsByClassName('btn building_selection');
+        let allBuildingsIDs = [];
+
+        for(let i = 0; i < allBuildingsBtn.length; i++){
+            if(allBuildingsBtn[i].classList.contains('btn-success')){
+                let buildingIDs = JSON.parse(allBuildingsBtn[i].getAttribute("building_type_ids")).map(Number);
+                allBuildingsIDs = allBuildingsIDs.concat(buildingIDs);
+            }
+        }
+
+        //Verbands-Gebäude haben derzeit keine Gebäudefilter-Knöpfe, deswegen die Unterscheidung
+        if(allBuildingsBtn.length > 0){
+            return [...new Set(allBuildingsIDs)];
+        }
+        else{
+            return [parseInt(document.getElementById('gebaeudeArt').value)];
+        }
+    }
+
 
     var relevantBuildingIDs = [];
     var oldAusbauSelection = NaN;
     var oldGebäudeSelection = NaN;
     var oldNumPeopleSelection = NaN;
     var oldLagerSelection = NaN;
+    var oldMaxAusbildungen = NaN;
+
+    var alreadyTrainedPersonalPerBuilding = {};
 
     function updateRelevantBuildings(){
         oldAusbauSelection = document.getElementById('ausbau').value;
-        oldGebäudeSelection = document.getElementById('gebaeudeArt').value;
+        oldGebäudeSelection = getToFilterBuildingIDs();
         oldNumPeopleSelection = document.getElementById('minPerson').value;
         oldLagerSelection = document.getElementById('lager').checked;
+        oldMaxAusbildungen = document.getElementById('maxAusbildungen').value;
+
+        let maxAusbildung = parseInt(oldMaxAusbildungen);
+
+
+        alreadyTrainedPersonalPerBuilding = loadNumberTrainedPersonal();
 
         relevantBuildingIDs = [];
 
@@ -315,9 +453,10 @@
 
         filtered = buildings.filter((e) => {
             if(e.extensions){
-                return (document.getElementById('gebaeudeArt').value == "" || e.building_type == parseInt(oldGebäudeSelection)) && (document.getElementById('minPerson').value == "" || parseInt(document.getElementById('minPerson').value) <= e.personal_count) &&
+                return (oldGebäudeSelection.includes(NaN) || oldGebäudeSelection.includes(e.building_type)) && (document.getElementById('minPerson').value == "" || parseInt(document.getElementById('minPerson').value) <= e.personal_count) &&
                     (document.getElementById('ausbau').value == "" || e.extensions.filter((e1) => e1.caption.indexOf(document.getElementById('ausbau').value) >= 0).length > 0) &&
-                    (oldLagerSelection == false || e.storage_upgrades.length > 0);
+                    (oldLagerSelection == false || e.storage_upgrades.length > 0) &&
+                    (!Object.hasOwn(alreadyTrainedPersonalPerBuilding, e.id) || !Number.isInteger(maxAusbildung) || Number.isInteger(maxAusbildung) && alreadyTrainedPersonalPerBuilding[e.id.toString()] < maxAusbildung);
             } else {
                 return false;
             }
@@ -332,28 +471,71 @@
 
     async function filterBuildings(){
         if(buildings){
-            if(oldAusbauSelection != document.getElementById('ausbau').value || oldGebäudeSelection != document.getElementById('gebaeudeArt').value || oldNumPeopleSelection != document.getElementById('minPerson').value ||
-               oldLagerSelection != document.getElementById('lager').checked){
+            //check for changes-settings
+            if(oldAusbauSelection != document.getElementById('ausbau').value || oldGebäudeSelection.toString() != getToFilterBuildingIDs().toString() || oldNumPeopleSelection != document.getElementById('minPerson').value ||
+               oldLagerSelection != document.getElementById('lager').checked || oldMaxAusbildungen != document.getElementById('maxAusbildungen').value){
                 updateRelevantBuildings();
-            }
 
-            for(var n = 0; n < allBuil.length;n++){
-                if(relevantBuildingIDs.includes(parseInt(allBuil[n].getElementsByClassName('panel-heading personal-select-heading')[0].getAttribute("building_id"))) &&
-                   (document.getElementById('maxAusbildungen').value == "" || parseInt(document.getElementById('maxAusbildungen').value) > getNumAusbildungen(allBuil[n]))){
-                    allBuil[n].setAttribute("class", "panel panel-default");
-                } else {
-                    allBuil[n].setAttribute("class", "panel-body hidden");
-                    if(allBuil[n].getElementsByClassName('panel-body').length > 0 && allBuil[n].getElementsByClassName('panel-body hidden').length == 0){
+                //hide all buildings which are irrelevant
+                for(var n1 = 0; n1 < allBuil.length;n1++){
+                    if(relevantBuildingIDs.includes(parseInt(allBuil[n1].getElementsByClassName('panel-heading personal-select-heading')[0].getAttribute("building_id")))){
+                        allBuil[n1].classList.replace("hidden", "panel-default");
+                    } else {
+                        allBuil[n1].classList.replace("panel-default", "hidden");
+
+                        //unselecting of people when building is filtered out. DEACTIVATED, bevause the default building-filter of leitstellenspiel is also not unselection selected people
+                        /*if(allBuil[n].getElementsByClassName('panel-body').length > 0 && allBuil[n].getElementsByClassName('panel-body hidden').length == 0){
                         allBuil[n].getElementsByClassName('panel-heading personal-select-heading')[0].click();
 
                         var allPeople = Array.prototype.slice.call(allBuil[n].getElementsByTagName("tr"));
+                        //remove first entry, it's the header
                         allPeople.shift();
 
                         for (let i = 0; i < allPeople.length; i++) {
                             UnselectPeople(allPeople[i]);
                         }
+                    }*/
                     }
                 }
+            }
+
+
+            //check all displayed (not hidden) buildings
+            let updateSessionStorage = false;
+
+            for(var n2 = 0; n2 < allBuil.length;n2++){
+                if (allBuil[n2].classList.contains('building-filtered-by-type') || allBuil[n2].classList.contains('hidden')) {
+                    continue;
+                }
+
+
+                if((document.getElementById('maxAusbildungen').value != "" && parseInt(document.getElementById('maxAusbildungen').value) <= getNumAusbildungen(allBuil[n2]))){
+                    allBuil[n2].classList.replace("panel-default", "hidden");
+
+                    let buildingIDStr = allBuil[n2].getElementsByClassName('panel-heading personal-select-heading')[0].getAttribute("building_id");
+                    if(!Object.hasOwn(alreadyTrainedPersonalPerBuilding, buildingIDStr)){
+                        alreadyTrainedPersonalPerBuilding[buildingIDStr] = getNumAusbildungen(allBuil[n2]);
+                        updateSessionStorage = true;
+                    }
+
+                    //unselecting of people when building is filtered out. DEACTIVATED, bevause the default building-filter of leitstellenspiel is also not unselection selected people
+                    /*if(allBuil[n].getElementsByClassName('panel-body').length > 0 && allBuil[n].getElementsByClassName('panel-body hidden').length == 0){
+                        allBuil[n].getElementsByClassName('panel-heading personal-select-heading')[0].click();
+
+                        var allPeople = Array.prototype.slice.call(allBuil[n].getElementsByTagName("tr"));
+                        //remove first entry, it's the header
+                        allPeople.shift();
+
+                        for (let i = 0; i < allPeople.length; i++) {
+                            UnselectPeople(allPeople[i]);
+                        }
+                    }*/
+                }
+            }
+
+            if(updateSessionStorage){
+                updateSessionStorage = false;
+                saveNumberTrainedPersonal(alreadyTrainedPersonalPerBuilding);
             }
         }
 
@@ -386,7 +568,10 @@
     function autoSelectPeople() {
         var allBuildings = Array.prototype.slice.call(document.getElementsByClassName("table table-striped tablesorter tablesorter-default"));
 
-        allBuildings = allBuildings.filter(item => new String(item.parentElement.className).valueOf() != new String("panel-body hidden").valueOf());
+
+        //filter Gebäude raus, welche geöffnet und danach wieder geschlossen wurden und Gebäude welche durch Filter rausgefiltert wurden
+        allBuildings = allBuildings.filter(item => !(item.parentElement.classList.contains('hidden') || item.parentElement.parentElement.classList.contains('hidden') || item.parentElement.parentElement.classList.contains('building-filtered-by-type')));
+
 
         allBuildings.forEach(item => {
             var allPeople = Array.prototype.slice.call(item.getElementsByTagName("tr"));
