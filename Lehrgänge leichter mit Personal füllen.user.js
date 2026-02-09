@@ -104,7 +104,7 @@
 
 
     if (!sessionStorage.getItem('c2Buildings') || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
-        console.log("load")
+        //console.log("load")
         await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
     }
 
@@ -165,7 +165,7 @@
             dropDownSelectionGebaeude = seenotGebaude;
         }
 
-        console.log(buildings.length)
+        //console.log(buildings.length)
         var dropDownSelectionAusbau = getAvailablExtensions(dropDownSelectionGebaeude, buildings)
 
         //var building = cBuildings.filter(b => b.id == buildingID)[0];
@@ -352,12 +352,11 @@
     }
 
     function saveNumberTrainedPersonal(objectToSave){
-        console.log("SAVEJNLNJL");
         localStorage.setItem(lehrgangsBezeichnung_SessionStorage, JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(objectToSave))}));
     }
 
     function loadNumberTrainedPersonal(){
-        console.log("LOAD");
+        //console.log("LOAD");
         if (lehrgangsBezeichnung_SessionStorage && localStorage.getItem(lehrgangsBezeichnung_SessionStorage)){
             return JSON.parse(LZString.decompress(JSON.parse(localStorage.getItem(lehrgangsBezeichnung_SessionStorage)).value));
         }
@@ -636,7 +635,7 @@
         if(building.getElementsByClassName("label label-info").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-info")[0].innerHTML) || 0;
         }
-        console.log(returnValue);
+        //console.log(returnValue);
         return returnValue;
     }
 
