@@ -502,6 +502,12 @@
                 "name": "Fachgruppe Logistik-Verpflegung",
                 "cost": 50000,
                 "duration": 7
+            },
+            {
+                "id": 15,
+                "name": "Fachgruppe Brückenbau",
+                "cost": 50000,
+                "duration": 7
             }
         ]
     },
