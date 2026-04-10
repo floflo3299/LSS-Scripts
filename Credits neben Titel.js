@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         Credits neben Titel
-// @version      1.0.0
+// @version      1.1.0
 // @description  zeigt die Credits-Menge für den Einsatz im Titel an
 // @author       Silberfighter
 // @include      *www.leitstellenspiel.de/missions/*
+// @include      *www.leitstellenspiel.de
+// @include      *www.leitstellenspiel.de/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // ==/UserScript==
@@ -14,27 +16,60 @@ this.$ = this.jQuery = jQuery.noConflict(true);
 
 $(document).ready(async function(){
 
-    let missionID = getMissionID();
+    if(window.location.href.includes("missions")){
+        let missionID = getMissionID();
 
-    let missionInfo = getMissionRequirements(missionID + "-0");
+        let missionInfo = getMissionRequirements(missionID + "-0");
 
-    if(missionInfo == null){
-        missionInfo = getMissionRequirements(missionID);
-    }
+        if(missionInfo == null){
+            missionInfo = getMissionRequirements(missionID);
+        }
 
-    if(missionInfo == null){
-        await getAndSaveAllMissions();
-        missionInfo = getMissionRequirements(missionID);
-    }
+        if(missionInfo == null){
+            await getAndSaveAllMissions();
+            missionInfo = getMissionRequirements(missionID);
+        }
 
 
 
-    if("average_credits" in missionInfo){
-        var title = $('#missionH1', document);
+        if("average_credits" in missionInfo){
+            var title = $('#missionH1', document);
 
-        var a = document.createElement("small");
-        a.innerHTML = "; " + missionInfo.average_credits + " Credits";
-        title[0].parentNode.append(a);
+            var a = document.createElement("small");
+            a.innerHTML = "; " + missionInfo.average_credits.toLocaleString('de-DE') + " Credits";
+            title[0].parentNode.append(a);
+        }
+    }else{
+
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    for (const node of mutation.addedNodes) {
+                        if (node.nodeType === 1) { // element node
+
+                            let textArray = node.getElementsByClassName("map_position_mover");
+
+                            if(textArray.length > 0){
+                                if(textArray[0].getElementsByClassName("CreditsLabel").length == 0){
+                                    textArray[0].innerHTML += '<small class="CreditsLabel">; ' + JSON.parse(node.getAttribute("data-sortable-by")).average_credits.toLocaleString('de-DE') + ' Credits</small>';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+        const mission_list_ids = ["mission_list", "mission_list_krankentransporte", "mission_list_krankentransporte_alliance", "mission_list_sicherheitswache", "mission_list_sicherheitswache_alliance", "mission_list_alliance", "mission_list_alliance_event"];
+
+
+        for (const mission_list_id_name of mission_list_ids) {
+            observer.observe(document.getElementById(mission_list_id_name), {
+                childList: true,
+                subtree: false
+            });
+        }
     }
 });
 
@@ -112,7 +147,3 @@ async function getAndSaveAllMissions(){
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(missions));
 }
-
-
-
-
