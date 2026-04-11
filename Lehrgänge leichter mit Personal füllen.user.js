@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name        Lehrgänge leichter mit Personal füllen
+// @name         Lehrgänge leichter mit Personal füllen
 // @namespace    http://tampermonkey.net/
-// @version      1.4.0
+// @version      1.5.0
 // @description  enables the filtering of buildings in the creation of courses and select people faster!
-// @author      Silberfighter
+// @author       Silberfighter
 // @include      https://www.leitstellenspiel.de/buildings/*
 // @include      https://www.leitstellenspiel.de/schoolings/*
-// @icon        https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @require      https://raw.githubusercontent.com/floflo3299/LSS-Scripts/main/HelperScripts/UTF16Converter.js
 // @grant        none
 // ==/UserScript==
@@ -15,11 +15,19 @@
     'use strict';
 
 
+
+
     //------- you can change this variables -------
+
+
+    //true    die Anzahl an freien Plätzen in den Lehrgängen wird ignoriert und es werden alle relevanten Leute ausgewählt, auch wenn dadurch die Anzahl an freien Plätzen negativ wird.
+    //false   es werden nur soviele Leute ausgewählt, bis die Lehrgänge voll sind.
+    const ignoreLehrgangLimit = true;
+
 
     //true    mit der Taste Q können die Personen ausgewählt werden (Taste "Auswählen" wird gedrückt) und mit E der/die Lehrgänge gestartet werden (Taste "Ausbilden" wird gedrückt)
     //false   die Tastenbelegung geht nicht
-    const enable_keys = false;
+    const enable_keys = true;
 
     //Mit dieser Variable können Standard-Filter-Werte für einzelne Lehrgänge festgelegt werden
     //Dabei muss man wie folgt vorgehen:
@@ -53,9 +61,73 @@
     var standardFilterWerte = [
         //***** unterhalb von hier einfügen *****
 
-        
+        ["GW-Messtechnik Lehrgang","0","","3",""],
+        ["GW-Gefahrgut Lehrgang","0","","3",""],
+        ["Höhenrettung Lehrgang","0","","9",""],
+        ["ELW 2 Lehrgang","0","","6",""],
+        ["Dekon-P Lehrgang","0","","6",""],
+        ["Feuerwehrkran Lehrgang","0","","2",""],
+        ["Flugfeldlöschfahrzeug-Ausbildung","0","Flughafenfeuerwehr","12",""],
+        ["Rettungstreppen-Ausbildung","0","Flughafenfeuerwehr","4",""],
+        ["Werkfeuerwehr-Ausbildung","0","Werkfeuerwehr","30",""],
+        ["Drohnen-Schulung","0","Drohneneinheit","4",""],
+        ["Bahnrettung","0","Bahnrettung","9",""],
+
+
+        //["SEK","11","SEK","9","35"],
+        //["MEK","11","MEK","9","35"],
+        //["SEK","11","SEK","18","53"],
+        //["MEK","11","MEK","18","53"],
+        //["SEK","11","SEK","36","53"],
+        //["MEK","11","MEK","36","53"],
         ["SEK","11","SEK","42","53"],
         ["MEK","11","MEK","42","53"],
+
+        ["Dienstgruppenleitung","6","","2",""],
+        ["Kriminalpolizei","6","","4",""],
+        ["Motorradstaffel","6","","2",""],
+
+        //["Hundeführer (Schutzhund)","11","Diensthundestaffel","3","56"],
+        ["Hundeführer (Schutzhund)","11","Diensthundestaffel","6","56"],
+
+        ["Wasserwerfer","11","Technischer Zug: Wasserwerfer","15","68"],
+        ["Lautsprecheroperator","11","","5","68"],
+
+        //["Zugführer (leBefKw)","11","","4","12"],
+        ["Zugführer (leBefKw)","11","","12","21"],
+
+        ["Hundertschaftsführer (FüKw)","11","","15",""],
+
+        ["Reiterstaffel","11","","12",""],
+
+        ["Polizeihubschrauber","13","","15",""],
+
+
+        ["Zugtrupp","","","8",""],
+        ["Fachgruppe Räumen","","","9",""],
+        ["Fachgruppe Wasserschaden/Pumpen","","","10",""],
+        ["Fachgruppe Schwere Bergung","","","9",""],
+        ["Fachgruppe Elektroversorgung","","","3",""],
+        ["Trupp Unbemannte Luftfahrtsysteme","","","4",""],
+        //["Fachzug Führung und Kommunikation","","","7",""],
+        ["Fachzug Führung und Kommunikation","","","22",""],
+
+
+        ["Notarzt-Ausbildung","2","","5",""],
+        ["LNA-Ausbildung","2","","1",""],
+        ["OrgL-Ausbildung","2","","1",""],
+        ["SEG - Einsatzleitung","12","","2",""],
+        ["SEG - GW-San","12","","6",""],
+        ["Drohnenoperator","12","","4",""],  //ULF
+        ["Verpflegungshelfer","12","","6",""],
+        ["Betreuungsdienst","12","","39",""],
+
+
+        ["Rettungshundeführer","21","","35",""],
+
+
+        ["GW-Wasserrettung Lehrgang","15","","18",""],
+        ["GW-Taucher Lehrgang","15","","4",""],
 
 
         //***** oberhalb von hier einfügen *****
@@ -104,7 +176,7 @@
 
 
     if (!sessionStorage.getItem('c2Buildings') || JSON.parse(sessionStorage.c2Buildings).lastUpdate < (new Date().getTime() - 5 * 1000 * 60) || JSON.parse(sessionStorage.c2Buildings).userId != user_id) {
-        //console.log("load")
+        console.log("load")
         await $.getJSON('/api/buildings').done(data => sessionStorage.setItem('c2Buildings', JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(data)), userId: user_id })));
     }
 
@@ -165,7 +237,7 @@
             dropDownSelectionGebaeude = seenotGebaude;
         }
 
-        //console.log(buildings.length)
+        console.log(buildings.length)
         var dropDownSelectionAusbau = getAvailablExtensions(dropDownSelectionGebaeude, buildings)
 
         //var building = cBuildings.filter(b => b.id == buildingID)[0];
@@ -264,7 +336,7 @@
         let div = document.createElement("div");
         div.className = "navbar-text navbar-right"
         div.innerHTML = `
-                <p style="display: inline-block">füllt die Anzahl der Ausbildungen pro Wache bis zur gewählten Zahl auf  </p>
+                <p style="display: inline-block">füllt die Anzahl der Ausbildungen <br>pro Wache bis zur gewählten Zahl auf  </p>
                 <input style="display:inline-block; color: #000; width:50px;" type="number" id="maxPerBuilding" min="1" value="1"></input>
                 <a id="btnAutoSelect" class="btn btn-success">Auswählen</a>
                 <input id="noEduc" name="noEduc" type="checkbox" checked="true">
@@ -352,11 +424,12 @@
     }
 
     function saveNumberTrainedPersonal(objectToSave){
+        console.log("SAVEJNLNJL");
         localStorage.setItem(lehrgangsBezeichnung_SessionStorage, JSON.stringify({ lastUpdate: new Date().getTime(), value: LZString.compress(JSON.stringify(objectToSave))}));
     }
 
     function loadNumberTrainedPersonal(){
-        //console.log("LOAD");
+        console.log("LOAD");
         if (lehrgangsBezeichnung_SessionStorage && localStorage.getItem(lehrgangsBezeichnung_SessionStorage)){
             return JSON.parse(LZString.decompress(JSON.parse(localStorage.getItem(lehrgangsBezeichnung_SessionStorage)).value));
         }
@@ -635,7 +708,7 @@
         if(building.getElementsByClassName("label label-info").length > 0){
             returnValue += parseInt(building.getElementsByClassName("label label-info")[0].innerHTML) || 0;
         }
-        //console.log(returnValue);
+        console.log(returnValue);
         return returnValue;
     }
 
@@ -644,7 +717,7 @@
     }
 
     function SelectPeople(entry){
-        if(!entry.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked && parseInt($('#schooling_free')[0].innerHTML) > 0){
+        if(!entry.getElementsByTagName("td")[0].getElementsByTagName("input")[0].checked && (ignoreLehrgangLimit || parseInt($('#schooling_free')[0].innerHTML) > 0)){
             entry.getElementsByTagName("td")[0].getElementsByTagName("input")[0].click();
         }
     }
