@@ -13,6 +13,17 @@
 // ==/UserScript==
 
 
+/*
+BESCHREIBUNG:
+Dieses Skript ermöglicht es beim Belegen von Verbandslehrgängen mehrere Verbandslehrgänge mit einem Klick zu starten.
+In dem geöffneten Verbandslehrgang werden alle Leute ausgewählt, welche geschult werden sollen, auch wenn die Anzahl der freien Plätze negativ wird.
+Anschließend wird auf den neu erschienenen Knopf "Ausbilden über Verband" geklickt und das Skript füllt automatisch soviele offene Lehrgänge wie nötig bzw. verfügbar.
+
+WICHTIG:
+1. Das Skript berücksichtigt nicht, wer den Lehrgang geöffnet hat oder ob der Lehrgang Gebühren verlang.
+2. Das Skript ist zwar getestet, aber noch nicht entgültig. Wenn Ihr ein Fehler bemerkt, teilt ihn mir mit.
+*/
+
 const TARGET_URL = 'https://www.leitstellenspiel.de/schoolings';
 const HTML_KEY = 'opened_page_html';
 const REQUEST_KEY = 'opened_page_request';
