@@ -10,6 +10,27 @@
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // ==/UserScript==
 
+
+
+// Farbe für die niedrige Credits-Kategorie
+const farbe_low = "#f8d7da"; // red
+
+// untere Greditsgrenze
+const credits_grenze_low = 5000;
+
+// Farbe für die mittlere Credits-Kategorie
+const farbe_mid = "#fff3cd"; // yellow
+
+// obere Greditsgrenze
+const credits_grenze_mid = 10000;
+
+// Farbe für die niedrige Credits-Kategorie
+const farbe_high = "#d4edda"; // green
+
+
+
+
+
 const STORAGE_KEY = "AllMissionsJSONForLeitstellenspiel"
 
 this.$ = this.jQuery = jQuery.noConflict(true);
@@ -51,7 +72,25 @@ $(document).ready(async function(){
 
                             if(textArray.length > 0){
                                 if(textArray[0].getElementsByClassName("CreditsLabel").length == 0){
-                                    textArray[0].innerHTML += '<small class="CreditsLabel">; ' + JSON.parse(node.getAttribute("data-sortable-by")).average_credits.toLocaleString('de-DE') + ' Credits</small>';
+                                    //textArray[0].innerHTML += '<small class="CreditsLabel">; ' + JSON.parse(node.getAttribute("data-sortable-by")).average_credits.toLocaleString('de-DE') + ' Credits</small>';
+
+                                    const avgCredits = JSON.parse(node.getAttribute("data-sortable-by")).average_credits;
+
+                                    let bgColor = "";
+
+                                    if (avgCredits < credits_grenze_low) {
+                                        bgColor = farbe_low;
+                                    } else if (avgCredits < credits_grenze_mid) {
+                                        bgColor = farbe_mid;
+                                    } else {
+                                        bgColor = farbe_high;
+                                    }
+
+                                    textArray[0].innerHTML += `
+    <div style="background-color: ${bgColor}; padding: 4px 8px; border-radius: 4px; display: inline-block;">
+        <small class="CreditsLabel">${avgCredits.toLocaleString('de-DE')} Credits</small>
+    </div>
+`;
                                 }
                             }
                         }
@@ -147,3 +186,7 @@ async function getAndSaveAllMissions(){
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(missions));
 }
+
+
+
+
