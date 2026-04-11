@@ -2,8 +2,8 @@
 // @name         verwende mehrere Verbandslehrgänge auf einmal
 // @namespace    http://tampermonkey.net/
 // @version      0.9
-// @description  Opens a target page, waits 5 seconds there, then sends HTML back
-// @author       You
+// @description  mit diesem Skript können mehrere Verbandslehrgänge auf einmal belegt werden
+// @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/schoolings/*
 // @match        https://www.leitstellenspiel.de/schoolings
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
