@@ -21,6 +21,7 @@
 
 
     //true    die Anzahl an freien Plätzen in den Lehrgängen wird ignoriert und es werden alle relevanten Leute ausgewählt, auch wenn dadurch die Anzahl an freien Plätzen negativ wird.
+    //        Diese Funktion ist interessant in Kombination mit dem Skript "verwende mehrere Verbandslehrgänge auf einmal"
     //false   es werden nur soviele Leute ausgewählt, bis die Lehrgänge voll sind.
     const ignoreLehrgangLimit = true;
 
