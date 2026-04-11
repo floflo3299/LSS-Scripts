@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         verwende mehrere Verbandslehrgänge auf einmal
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      0.9
 // @description  Opens a target page, waits 5 seconds there, then sends HTML back
 // @author       You
 // @match        https://www.leitstellenspiel.de/schoolings/*
