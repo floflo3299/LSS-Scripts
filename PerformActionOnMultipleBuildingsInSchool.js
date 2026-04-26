@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         PerformActionOnMultipleBuildingsInSchool
 // @namespace    http://tampermonkey.net/
-// @version      v0.2
-// @description  try to take over the world!
+// @version      1.0
+// @description  führt das "Verfügbare auswählen" in den Schulungen auf alle ausgeklappten Gebäude aus
 // @author       Silberfighter
 // @match        https://www.leitstellenspiel.de/buildings/*
+// @match        https://www.leitstellenspiel.de/schoolings/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
 // @grant        none
 // ==/UserScript==
@@ -26,6 +27,7 @@
     }
 
     function addListenerToDropDown(ElementClickedOn){
+
         waitUntilLoaded(ElementClickedOn.nextElementSibling)
 
     }
@@ -40,6 +42,7 @@
             //console.log("laoded")
 
             let allDropDownElements = elemToCheck.getElementsByTagName("li")
+            console.log(allDropDownElements)
 
 
             for (let ele of allDropDownElements){
