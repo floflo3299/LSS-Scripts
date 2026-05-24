@@ -370,6 +370,12 @@
                 "name": "Motorradstaffel",
                 "cost": 75000,
                 "duration": 2
+            },
+            {
+                "id": 16,
+                "name": "Autobahnpolizei",
+                "cost": 75000,
+                "duration": 2
             }
         ]
     },
