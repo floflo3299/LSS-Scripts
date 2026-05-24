@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         de-/activate Extensions
 // @namespace    http://tampermonkey.net/
-// @version      1.3.6
+// @version      1.3.7
 // @description  Change the status of expensions and buildings
 // @author       Silberfighter
-// @include      *://www.leitstellenspiel.de/*
+// @include      *://www.leitstellenspiel.de
+// @include      *://www.leitstellenspiel.de/#_=_
 // @include      /^https?:\/\/(?:w{3}\.)?(?:polizei\.)?leitstellenspiel\.de\/$/
 // @exclude      *://www.leitstellenspiel.de/*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leitstellenspiel.de
@@ -113,8 +114,8 @@
     });
 
 
-    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24,25,26,28];
-    const extensionsToIgnore = ["Abrollbehälter-Stellplatz", "Großwache", "Zelle"];
+    const relevantBuildingsID = [0,2,4,5,6,9,11,12,13,15,17,21,24,25,26,28,29];
+    const extensionsToIgnore = ["Abrollbehälter-Stellplatz", "Großwache", "Großgewahrsam", "Zelle"];
 
     overlayContent.innerHTML += `
         <div class="overlay-header" id="`+baseID+`OverlayHeader">
@@ -170,6 +171,8 @@
 
         let relevantExtensions = relevantBuilding.extensions;
         let buildingIDs = getRelevantBuildingID(relevantBuilding.id);
+
+        console.log(sessionStorage.c2Buildings);
 
         let allRelevantBuildings = JSON.parse(LZString.decompress(JSON.parse(sessionStorage.c2Buildings).value)).filter(e => buildingIDs.indexOf(e.building_type) >= 0);
 
