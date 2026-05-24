@@ -1073,5 +1073,74 @@
         "class_alias": [],
         "max_level": 1,
         "extensions": []
+    },
+    {
+        "id": 29,
+        "name": "Autobahnpolizei",
+        "class": [],
+        "class_alias": [],
+        "max_level": 9,
+        "extensions": [
+            {
+                "id": 0,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 1,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 2,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 3,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 4,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 5,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 6,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 7,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 8,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            },
+            {
+                "id": 9,
+                "name": "Zelle",
+                "cost": 25000,
+                "duration": 7
+            }
+        ]
     }
 ]
