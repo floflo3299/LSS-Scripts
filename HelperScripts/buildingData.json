@@ -372,6 +372,18 @@
                 "duration": 2
             },
             {
+                "id": 14,
+                "name": "Großwache",
+                "cost": 1000000,
+                "duration": 7
+            },
+            {
+                "id": 15,
+                "name": "Großgewahrsam",
+                "cost": 200000,
+                "duration": 7
+            },
+            {
                 "id": 16,
                 "name": "Autobahnpolizei",
                 "cost": 75000,
